@@ -1,0 +1,148 @@
+[
+  {
+    "id": 55, "name": "executable-links", "title": "Executable links",
+    "operator": "executable_links", "parameters": {"max_steps": 128}, "anchors": ["rule", "action", "state"],
+    "requires": [59],
+    "cases": [
+      {
+        "name": "event reaches goal",
+        "input": {
+          "state": {"x": 4}, "event": {"kind": "input", "step": 3}, "entry": "advance",
+          "links": {
+            "advance": {
+              "when": {"path": "event.kind", "value": "input"},
+              "operation": 59,
+              "input": {"state": {"$": "state"}, "values": {"step": {"$": "event.step"}}},
+              "write": {"x": {"$": "result.value"}}, "next": null
+            }
+          },
+          "c": {"path": "state.x", "op": "ge", "value": 7}
+        },
+        "expect": {"status": "reached", "state": {"x": 7}, "cursor": null}
+      },
+      {
+        "name": "waiting for event leaves resume address",
+        "input": {
+          "state": {"x": 4}, "entry": "advance",
+          "links": {"advance": {"when": {"path": "event.kind", "value": "input"}, "operation": 59}}
+        },
+        "expect": {"status": "waiting", "state": {"x": 4}, "cursor": "advance", "steps": []}
+      }
+    ]
+  },
+  {
+    "id": 56, "name": "arithmetic-dependencies", "title": "Arithmetic dependencies",
+    "operator": "arithmetic_dependencies", "anchors": ["measure", "number", "value"],
+    "cases": [{
+      "name": "read exactly the required operands",
+      "input": {"expression": "a + b", "operands": {
+        "a": {"record": ["WANT TO GO"], "encoding": "decimal", "index": 0},
+        "b": {"value": "1.186616"}, "unused": {"scalar": 999999999}
+      }},
+      "expect": {"value": 0, "operands": {"a": "-1.186616", "b": "1.186616"}, "read": ["a", "b"]}
+    }]
+  },
+  {
+    "id": 57, "name": "goal-conditions", "title": "Goal conditions",
+    "operator": "goal_conditions", "anchors": ["goal", "condition"],
+    "cases": [{
+      "name": "check combined conditions",
+      "input": {"state": {"quantity": 12, "ready": true}, "c": {"all": [
+        {"path": "state.quantity", "op": "ge", "value": 10},
+        {"path": "state.ready", "value": true}
+      ]}},
+      "expect": {"reached": true}
+    }]
+  },
+  {
+    "id": 58, "name": "direct-transitions", "title": "Direct transitions",
+    "operator": "direct_transitions", "anchors": ["state", "event", "next"],
+    "cases": [{
+      "name": "select an already-stored successor",
+      "input": {"state": "waiting", "event": "press", "table": {
+        "[\"waiting\",\"press\"]": {"next": "on", "reply": "ready"},
+        "[\"waiting\",\"release\"]": {"next": "waiting"}
+      }},
+      "expect": {"found": true, "state": "on", "reply": "ready"}
+    }]
+  },
+  {
+    "id": 59, "name": "parameterized-transitions", "title": "Parameterized transitions",
+    "operator": "parameterized_transitions", "parameters": {"expression": "x + step", "target": "x"},
+    "anchors": ["variable", "state", "change"],
+    "cases": [{
+      "name": "apply the same expression to a supplied binding",
+      "input": {"state": {"x": 5, "marker": "current"}, "values": {"step": 4}},
+      "expect": {"value": 9, "state": {"x": 9, "marker": "current"}}
+    }]
+  },
+  {
+    "id": 60, "name": "ordered-effects", "title": "Ordered effects",
+    "operator": "ordered_effects", "anchors": ["order", "effect"],
+    "cases": [{
+      "name": "second effect observes the first write",
+      "input": {"state": {"a": 1}, "effects": [
+        {"target": "a", "value": 2},
+        {"target": "b", "expression": "a * 3"}
+      ]},
+      "expect": {"state": {"a": 2, "b": 6}}
+    }]
+  },
+  {
+    "id": 61, "name": "parallel-effects", "title": "Parallel effects",
+    "operator": "parallel_effects", "anchors": ["effect", "independent"],
+    "cases": [
+      {
+        "name": "effects see the same starting state",
+        "input": {"state": {"a": 1}, "effects": [
+          {"target": "a", "value": 2}, {"target": "b", "expression": "a * 3"}
+        ]},
+        "expect": {"state": {"a": 2, "b": 3}, "conflicts": []}
+      },
+      {
+        "name": "incompatible writes keep the current value",
+        "input": {"state": {"a": 1}, "effects": [{"target": "a", "value": 2}, {"target": "a", "value": 3}]},
+        "expect": {"state": {"a": 1}, "conflicts": ["a"]}
+      }
+    ]
+  },
+  {
+    "id": 62, "name": "rule-composition", "title": "Rule composition",
+    "operator": "rule_composition", "anchors": ["rule", "input", "output"], "requires": [59],
+    "cases": [{
+      "name": "pass a computed state into another step",
+      "input": {
+        "input": {"x": 2},
+        "steps": [
+          {"name": "first", "operation": 59, "input": {"state": {"$": "input"}, "values": {"step": 3}}},
+          {"name": "second", "operation": 59, "input": {"state": {"$": "outputs.first.state"}, "values": {"step": 4}}}
+        ],
+        "result": {"$": "outputs.second.value"}
+      },
+      "expect": {"value": 9, "outputs": {"first": {"value": 5}, "second": {"value": 9}}}
+    }]
+  },
+  {
+    "id": 63, "name": "traceable-execution", "title": "Traceable execution",
+    "operator": "traceable_execution", "anchors": ["trace", "rule", "result"], "requires": [59],
+    "cases": [{
+      "name": "record the inputs and output of a real execution",
+      "input": {"operation": 59, "input": {"state": {"x": 3}, "values": {"step": 4}}},
+      "expect": {
+        "result": {"value": 7},
+        "trace": [{"operation": 59, "input": {"state": {"x": 3}}, "result": {"value": 7}}]
+      }
+    }]
+  },
+  {
+    "id": 64, "name": "cycle-detection", "title": "Cycle detection",
+    "operator": "cycle_detection", "anchors": ["cycle", "path", "goal"],
+    "cases": [{
+      "name": "find a route despite a reachable cycle",
+      "input": {"start": "entry", "c": "goal", "links": {
+        "entry": ["loop", "alternate"], "loop": ["entry"], "alternate": ["goal"]
+      }},
+      "expect": {"reached": true, "route": ["entry", "alternate", "goal"], "cycle_edges": [["loop", "entry"]]}
+    }]
+  }
+]

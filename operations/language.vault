@@ -1,0 +1,1905 @@
+[
+  {
+    "id": 1,
+    "name": "word-senses",
+    "title": "Word senses",
+    "operator": "sense",
+    "parameters": {
+      "words": {
+        "bank": {
+          "financial": [
+            "loan",
+            "deposit",
+            "account"
+          ],
+          "river": [
+            "river",
+            "water",
+            "shore"
+          ]
+        }
+      }
+    },
+    "anchors": [
+      "bank",
+      "money",
+      "river"
+    ],
+    "cases": [
+      {
+        "name": "river",
+        "input": {
+          "word": "bank",
+          "context": "They walked along the river where water met the shore."
+        },
+        "expect": {
+          "sense": "river",
+          "scores": {
+            "river": 3,
+            "financial": 0
+          }
+        }
+      },
+      {
+        "name": "financial",
+        "input": {
+          "word": "Bank",
+          "context": "Deposit the check into my account."
+        },
+        "expect": {
+          "sense": "financial"
+        }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "reference-resolution",
+    "title": "Reference resolution",
+    "operator": "reference",
+    "parameters": {
+      "references": {
+        "she": {
+          "number": "singular",
+          "kind": "person"
+        },
+        "it": {
+          "number": "singular",
+          "kind": "thing"
+        },
+        "they": {
+          "number": "plural"
+        }
+      }
+    },
+    "anchors": [
+      "reference",
+      "person"
+    ],
+    "cases": [
+      {
+        "name": "pronoun",
+        "input": {
+          "reference": "she",
+          "mentions": [
+            {
+              "id": "box",
+              "position": 0,
+              "number": "singular",
+              "kind": "thing"
+            },
+            {
+              "id": "mira",
+              "position": 1,
+              "number": "singular",
+              "kind": "person"
+            },
+            {
+              "id": "birds",
+              "position": 2,
+              "number": "plural",
+              "kind": "animal"
+            }
+          ]
+        },
+        "expect": {
+          "antecedent": "mira"
+        }
+      },
+      {
+        "name": "description",
+        "input": {
+          "reference": "the container",
+          "attributes": {
+            "kind": "thing"
+          },
+          "mentions": [
+            {
+              "id": "box",
+              "position": 0,
+              "number": "singular",
+              "kind": "thing"
+            },
+            {
+              "id": "mira",
+              "position": 1,
+              "number": "singular",
+              "kind": "person"
+            },
+            {
+              "id": "birds",
+              "position": 2,
+              "number": "plural",
+              "kind": "animal"
+            }
+          ]
+        },
+        "expect": {
+          "antecedent": "box"
+        }
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "here-there-and-now",
+    "title": "Here, there, and now",
+    "operator": "deixis",
+    "parameters": {
+      "sources": {
+        "I": "speaker",
+        "you": "listener",
+        "here": "place",
+        "there": "pointed_place",
+        "now": "instant",
+        "today": "date"
+      },
+      "days": {
+        "yesterday": -1,
+        "tomorrow": 1
+      }
+    },
+    "anchors": [
+      "speaker",
+      "place",
+      "time"
+    ],
+    "cases": [
+      {
+        "name": "speaker-place-and-date",
+        "input": {
+          "tokens": [
+            "I",
+            "here",
+            "there",
+            "now",
+            "tomorrow"
+          ],
+          "setting": {
+            "speaker": "Mira",
+            "place": "kitchen",
+            "pointed_place": "garden",
+            "instant": "2028-02-29T16:30:00Z",
+            "date": "2028-02-29"
+          }
+        },
+        "expect": {
+          "I": "Mira",
+          "here": "kitchen",
+          "there": "garden",
+          "now": "2028-02-29T16:30:00Z",
+          "tomorrow": "2028-03-01"
+        }
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "semantic-roles",
+    "title": "Semantic roles",
+    "operator": "event",
+    "parameters": {
+      "templates": [
+        {
+          "pattern": "(?P<agent>\\w+) gave (?P<theme>.+?) to (?P<recipient>\\w+)",
+          "event": "give"
+        },
+        {
+          "pattern": "(?P<agent>\\w+) opened (?P<patient>.+?) with (?P<instrument>.+)",
+          "event": "open"
+        }
+      ]
+    },
+    "anchors": [
+      "event",
+      "give"
+    ],
+    "cases": [
+      {
+        "name": "transfer",
+        "input": {
+          "sentence": "Mira gave a blue cup to Lee."
+        },
+        "expect": {
+          "event": "give",
+          "roles": {
+            "agent": "mira",
+            "recipient": "lee",
+            "theme": "a blue cup"
+          }
+        }
+      },
+      {
+        "name": "instrument",
+        "input": {
+          "sentence": "Lee opened the box with a key."
+        },
+        "expect": {
+          "event": "open",
+          "roles": {
+            "instrument": "a key",
+            "patient": "the box",
+            "agent": "lee"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "paraphrase",
+    "title": "Paraphrase",
+    "operator": "event",
+    "parameters": {
+      "templates": [
+        {
+          "pattern": "(?P<agent>\\w+) gave (?P<theme>.+?) to (?P<recipient>\\w+)",
+          "event": "give"
+        },
+        {
+          "pattern": "(?P<theme>.+?) was given to (?P<recipient>\\w+) by (?P<agent>\\w+)",
+          "event": "give"
+        }
+      ]
+    },
+    "anchors": [
+      "sentence",
+      "meaning"
+    ],
+    "cases": [
+      {
+        "name": "active",
+        "input": {
+          "sentence": "Mira gave a blue cup to Lee."
+        },
+        "expect": {
+          "event": "give",
+          "roles": {
+            "agent": "mira",
+            "recipient": "lee",
+            "theme": "a blue cup"
+          }
+        }
+      },
+      {
+        "name": "passive",
+        "input": {
+          "sentence": "A blue cup was given to Lee by Mira."
+        },
+        "expect": {
+          "event": "give",
+          "roles": {
+            "agent": "mira",
+            "recipient": "lee",
+            "theme": "a blue cup"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "phrase-composition",
+    "title": "Phrase composition",
+    "operator": "compound",
+    "parameters": {
+      "relations": {
+        "purpose": "{head} for {modifier}",
+        "material": "{head} made of {modifier}",
+        "location": "{head} found in {modifier}"
+      }
+    },
+    "anchors": [
+      "phrase",
+      "word"
+    ],
+    "cases": [
+      {
+        "name": "new-purpose-compound",
+        "input": {
+          "parts": [
+            "night",
+            "garden",
+            "lamp"
+          ],
+          "relation": "purpose"
+        },
+        "expect": {
+          "head": "lamp",
+          "modifier": "night garden",
+          "gloss": "lamp for night garden"
+        }
+      },
+      {
+        "name": "new-material-compound",
+        "input": {
+          "parts": [
+            "bamboo",
+            "shelf"
+          ],
+          "relation": "material"
+        },
+        "expect": {
+          "gloss": "shelf made of bamboo"
+        }
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "idioms",
+    "title": "Idioms",
+    "operator": "idiom",
+    "parameters": {
+      "idioms": {
+        "break the ice": {
+          "conventional": {
+            "cues": [
+              "party",
+              "conversation",
+              "strangers"
+            ],
+            "meaning": "ease social tension"
+          },
+          "literal": {
+            "cues": [
+              "frozen",
+              "lake",
+              "hammer"
+            ],
+            "meaning": "fracture frozen water"
+          }
+        }
+      }
+    },
+    "anchors": [
+      "phrase",
+      "ice"
+    ],
+    "cases": [
+      {
+        "name": "social",
+        "input": {
+          "phrase": "break the ice",
+          "context": "Strangers at the party needed a way to start a conversation."
+        },
+        "expect": {
+          "reading": "conventional",
+          "meaning": "ease social tension"
+        }
+      },
+      {
+        "name": "physical",
+        "input": {
+          "phrase": "break the ice",
+          "context": "She carried a hammer onto the frozen lake."
+        },
+        "expect": {
+          "reading": "literal",
+          "meaning": "fracture frozen water"
+        }
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "negation-scope",
+    "title": "Negation scope",
+    "operator": "negation",
+    "parameters": {
+      "polarity_field": "affirmed"
+    },
+    "anchors": [
+      "deny",
+      "sentence"
+    ],
+    "cases": [
+      {
+        "name": "embedded-denial",
+        "input": {
+          "statement": {
+            "predicate": "say",
+            "affirmed": true,
+            "content": {
+              "predicate": "leave",
+              "agent": "lee"
+            },
+            "speaker": "mira"
+          },
+          "scope": [
+            "content"
+          ]
+        },
+        "expect": {
+          "predicate": "say",
+          "affirmed": true,
+          "content": {
+            "predicate": "leave",
+            "agent": "lee",
+            "affirmed": false
+          },
+          "speaker": "mira"
+        }
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "presuppositions",
+    "title": "Presuppositions",
+    "operator": "presuppositions",
+    "parameters": {
+      "triggers": [
+        {
+          "pattern": "when did (?P<person>\\w+) stop (?P<activity>.+)",
+          "predicate": "previously_did"
+        },
+        {
+          "pattern": "where did (?P<person>\\w+) find (?P<object>.+)",
+          "predicate": "found"
+        }
+      ]
+    },
+    "anchors": [
+      "question",
+      "fact"
+    ],
+    "cases": [
+      {
+        "name": "stop-question",
+        "input": {
+          "sentence": "When did Mira stop skating?"
+        },
+        "expect": {
+          "presupposed": [
+            {
+              "predicate": "previously_did",
+              "roles": {
+                "person": "mira",
+                "activity": "skating"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "crosslanguage-meaning",
+    "title": "Cross-language meaning",
+    "operator": "translate",
+    "parameters": {
+      "variants": {
+        "en": {
+          "the sky is blue": "sky_blue"
+        },
+        "es": {
+          "el cielo es azul": "sky_blue"
+        },
+        "fr": {
+          "le ciel est bleu": "sky_blue"
+        }
+      },
+      "facts": {
+        "sky_blue": {
+          "subject": "sky",
+          "property": "color",
+          "value": "blue"
+        }
+      }
+    },
+    "anchors": [
+      "language",
+      "meaning"
+    ],
+    "cases": [
+      {
+        "name": "spanish",
+        "input": {
+          "language": "es",
+          "sentence": "El cielo es azul."
+        },
+        "expect": {
+          "fact": {
+            "subject": "sky",
+            "property": "color",
+            "value": "blue"
+          }
+        }
+      },
+      {
+        "name": "french",
+        "input": {
+          "language": "fr",
+          "sentence": "Le ciel est bleu."
+        },
+        "expect": {
+          "fact": {
+            "subject": "sky",
+            "property": "color",
+            "value": "blue"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "name": "speech-acts",
+    "title": "Speech acts",
+    "operator": "speech_act",
+    "parameters": {
+      "patterns": [
+        {
+          "route": "ask",
+          "pattern": "where is (?P<subject>.+)"
+        },
+        {
+          "route": "request",
+          "pattern": "please (?P<subject>.+)"
+        },
+        {
+          "route": "promise",
+          "pattern": "i promise to (?P<subject>.+)"
+        },
+        {
+          "route": "offer",
+          "pattern": "i can offer (?P<subject>.+)"
+        },
+        {
+          "route": "object",
+          "pattern": "i object to (?P<subject>.+)"
+        },
+        {
+          "route": "correct",
+          "pattern": "actually, (?P<subject>.+)"
+        }
+      ]
+    },
+    "anchors": [
+      "promise",
+      "request"
+    ],
+    "cases": [
+      {
+        "name": "promise",
+        "input": {
+          "utterance": "I promise to call Lee."
+        },
+        "expect": {
+          "act": "promise",
+          "subject": "call Lee"
+        }
+      },
+      {
+        "name": "correction",
+        "input": {
+          "utterance": "Actually, the door is open."
+        },
+        "expect": {
+          "act": "correct",
+          "subject": "the door is open"
+        }
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "intent",
+    "title": "Intent",
+    "operator": "intent",
+    "parameters": {
+      "patterns": [
+        {
+          "route": "explanation",
+          "pattern": "why (?P<subject>.+)"
+        },
+        {
+          "route": "answer",
+          "pattern": "what is (?P<subject>.+)"
+        },
+        {
+          "route": "decision",
+          "pattern": "choose (?P<subject>.+)"
+        },
+        {
+          "route": "action",
+          "pattern": "please (?P<subject>.+)"
+        }
+      ],
+      "fields": {
+        "answer": [
+          "value"
+        ],
+        "explanation": [
+          "conclusion",
+          "reason"
+        ],
+        "decision": [
+          "options",
+          "criteria"
+        ],
+        "action": [
+          "verb",
+          "object"
+        ]
+      }
+    },
+    "anchors": [
+      "intention",
+      "answer"
+    ],
+    "cases": [
+      {
+        "name": "explain",
+        "input": {
+          "utterance": "Why did the timer ring?"
+        },
+        "expect": {
+          "intent": "explanation",
+          "goal": "did the timer ring",
+          "fields": [
+            "conclusion",
+            "reason"
+          ]
+        }
+      },
+      {
+        "name": "decide",
+        "input": {
+          "utterance": "Choose a route."
+        },
+        "expect": {
+          "intent": "decision",
+          "goal": "a route",
+          "fields": [
+            "options",
+            "criteria"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "constraints",
+    "title": "Constraints",
+    "operator": "constrain",
+    "parameters": {
+      "constraints": {
+        "just the name": {
+          "fields": [
+            "name"
+          ],
+          "limit": 1
+        },
+        "names and dates": {
+          "fields": [
+            "name",
+            "date"
+          ]
+        }
+      }
+    },
+    "anchors": [
+      "name",
+      "information"
+    ],
+    "cases": [
+      {
+        "name": "single-name",
+        "input": {
+          "constraint": "just the name",
+          "results": [
+            {
+              "name": "Mira",
+              "date": "Monday",
+              "age": 31
+            },
+            {
+              "name": "Lee",
+              "age": 46
+            }
+          ]
+        },
+        "expect": [
+          {
+            "name": "Mira"
+          }
+        ]
+      },
+      {
+        "name": "date-list",
+        "input": {
+          "constraint": "names and dates",
+          "results": [
+            {
+              "name": "Mira",
+              "date": "Monday",
+              "age": 31
+            },
+            {
+              "name": "Lee",
+              "date": "Friday",
+              "age": 46
+            }
+          ]
+        },
+        "expect": [
+          {
+            "name": "Mira",
+            "date": "Monday"
+          },
+          {
+            "name": "Lee",
+            "date": "Friday"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "missing-information",
+    "title": "Missing information",
+    "operator": "missing",
+    "parameters": {
+      "required": {
+        "delivery": [
+          "recipient",
+          "address",
+          "item"
+        ],
+        "booking": [
+          "date",
+          "time",
+          "party_size"
+        ]
+      }
+    },
+    "anchors": [
+      "question",
+      "information"
+    ],
+    "cases": [
+      {
+        "name": "unresolved-address",
+        "input": {
+          "operation": "delivery",
+          "values": {
+            "recipient": "Mira",
+            "item": "book",
+            "address": ""
+          }
+        },
+        "expect": {
+          "missing": [
+            "address"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "clarification",
+    "title": "Clarification",
+    "operator": "clarify",
+    "parameters": {
+      "questions": [
+        {
+          "field": "color",
+          "priority": 1,
+          "question": "What color?"
+        },
+        {
+          "field": "time",
+          "priority": 2,
+          "question": "What time do you plan to travel?"
+        }
+      ]
+    },
+    "anchors": [
+      "question",
+      "choice"
+    ],
+    "cases": [
+      {
+        "name": "outcome-changing-field",
+        "input": {
+          "known": {},
+          "alternatives": [
+            {
+              "time": "morning",
+              "color": "green",
+              "outcome": "bus"
+            },
+            {
+              "time": "afternoon",
+              "color": "green",
+              "outcome": "train"
+            }
+          ]
+        },
+        "expect": {
+          "field": "time",
+          "question": "What time do you plan to travel?"
+        }
+      },
+      {
+        "name": "same-outcome",
+        "input": {
+          "known": {},
+          "alternatives": [
+            {
+              "time": "morning",
+              "color": "green",
+              "outcome": "bus"
+            },
+            {
+              "time": "afternoon",
+              "color": "blue",
+              "outcome": "bus"
+            }
+          ]
+        },
+        "expect": {
+          "field": null,
+          "question": null
+        }
+      }
+    ]
+  },
+  {
+    "id": 16,
+    "name": "indirect-requests",
+    "title": "Indirect requests",
+    "operator": "indirect",
+    "parameters": {
+      "request_label": "request",
+      "default_label": "statement",
+      "rules": [
+        {
+          "setting": "shared room",
+          "intent": "warmer room",
+          "cues": [
+            "cold",
+            "here"
+          ],
+          "action": "close the window"
+        }
+      ]
+    },
+    "anchors": [
+      "request",
+      "window"
+    ],
+    "cases": [
+      {
+        "name": "shared-room",
+        "input": {
+          "utterance": "It is cold in here.",
+          "setting": "shared room",
+          "intent": "warmer room"
+        },
+        "expect": {
+          "act": "request",
+          "action": "close the window"
+        }
+      },
+      {
+        "name": "temperature-report",
+        "input": {
+          "utterance": "It is cold in here.",
+          "setting": "shared room",
+          "intent": "record temperature"
+        },
+        "expect": {
+          "act": "statement",
+          "action": null
+        }
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "commitments",
+    "title": "Commitments",
+    "operator": "commitment",
+    "parameters": {
+      "initial": "none",
+      "transitions": {
+        "none": {
+          "offer": "offered"
+        },
+        "offered": {
+          "accept": "accepted",
+          "decline": "declined"
+        },
+        "accepted": {
+          "become due": "due",
+          "fulfill": "fulfilled"
+        },
+        "due": {
+          "fulfill": "fulfilled"
+        }
+      }
+    },
+    "anchors": [
+      "promise",
+      "commitment"
+    ],
+    "cases": [
+      {
+        "name": "completed-commitment",
+        "input": {
+          "events": [
+            {
+              "event": "offer"
+            },
+            {
+              "event": "accept"
+            },
+            {
+              "event": "become due"
+            },
+            {
+              "event": "fulfill"
+            }
+          ]
+        },
+        "expect": {
+          "state": "fulfilled",
+          "history": [
+            "offered",
+            "accepted",
+            "due",
+            "fulfilled"
+          ]
+        }
+      },
+      {
+        "name": "offer-declined",
+        "input": {
+          "events": [
+            {
+              "event": "offer"
+            },
+            {
+              "event": "decline"
+            }
+          ]
+        },
+        "expect": {
+          "state": "declined",
+          "history": [
+            "offered",
+            "declined"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "corrections",
+    "title": "Corrections",
+    "operator": "correction",
+    "parameters": {
+      "identity": [
+        "subject",
+        "scope"
+      ],
+      "editable": [
+        "color",
+        "time"
+      ]
+    },
+    "anchors": [
+      "fact",
+      "history"
+    ],
+    "cases": [
+      {
+        "name": "update-one-scope",
+        "input": {
+          "facts": [
+            {
+              "subject": "cup",
+              "scope": "kitchen",
+              "color": "red"
+            },
+            {
+              "subject": "cup",
+              "scope": "office",
+              "color": "red"
+            }
+          ],
+          "correction": {
+            "subject": "cup",
+            "scope": "kitchen",
+            "field": "color",
+            "value": "blue"
+          }
+        },
+        "expect": {
+          "facts": [
+            {
+              "subject": "cup",
+              "scope": "kitchen",
+              "color": "blue"
+            },
+            {
+              "subject": "cup",
+              "scope": "office",
+              "color": "red"
+            }
+          ],
+          "history": [
+            {
+              "subject": "cup",
+              "scope": "kitchen",
+              "field": "color",
+              "before": "red",
+              "after": "blue"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "topic-return",
+    "title": "Topic return",
+    "operator": "topic",
+    "parameters": {
+      "leave": "leave",
+      "resume": "resume"
+    },
+    "anchors": [
+      "topic",
+      "history"
+    ],
+    "cases": [
+      {
+        "name": "return-to-first-branch",
+        "input": {
+          "initial": "garden",
+          "moves": [
+            {
+              "type": "leave",
+              "topic": "dinner",
+              "checkpoint": {
+                "open": "watering time"
+              }
+            },
+            {
+              "type": "leave",
+              "topic": "travel",
+              "checkpoint": {
+                "open": "guest count"
+              }
+            },
+            {
+              "type": "resume",
+              "topic": "garden"
+            }
+          ]
+        },
+        "expect": {
+          "topic": "garden",
+          "checkpoint": {
+            "open": "watering time"
+          },
+          "bookmarks": {
+            "dinner": {
+              "open": "guest count"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 20,
+    "name": "reply-structure",
+    "title": "Reply structure",
+    "operator": "reply",
+    "parameters": {
+      "formats": {
+        "answer": {
+          "fields": [
+            "conclusion"
+          ],
+          "template": "{conclusion}"
+        },
+        "example": {
+          "fields": [
+            "conclusion",
+            "example"
+          ],
+          "template": "{conclusion} For example, {example}"
+        },
+        "proof": {
+          "fields": [
+            "proof",
+            "conclusion"
+          ],
+          "template": "{proof} Therefore, {conclusion}"
+        },
+        "explanation": {
+          "fields": [
+            "conclusion",
+            "reason"
+          ],
+          "template": "{conclusion} {reason}"
+        }
+      }
+    },
+    "anchors": [
+      "reply",
+      "answer"
+    ],
+    "cases": [
+      {
+        "name": "example",
+        "input": {
+          "format": "example",
+          "conclusion": "The shelter is open.",
+          "evidence": {
+            "example": "A traveler entered at noon.",
+            "proof": "The signed schedule lists today's hours.",
+            "reason": "It is within posted hours."
+          }
+        },
+        "expect": {
+          "missing": [],
+          "text": "The shelter is open. For example, A traveler entered at noon."
+        }
+      },
+      {
+        "name": "proof",
+        "input": {
+          "format": "proof",
+          "conclusion": "The shelter is open.",
+          "evidence": {
+            "example": "A traveler entered at noon.",
+            "proof": "The signed schedule lists today's hours.",
+            "reason": "It is within posted hours."
+          }
+        },
+        "expect": {
+          "missing": [],
+          "text": "The signed schedule lists today's hours. Therefore, The shelter is open."
+        }
+      }
+    ]
+  },
+  {
+    "id": 33,
+    "name": "encountered-possibilities",
+    "title": "Encountered possibilities",
+    "operator": "encounter",
+    "parameters": {
+      "bindings": "symbols"
+    },
+    "anchors": [
+      "symbol",
+      "meaning"
+    ],
+    "cases": [
+      {
+        "name": "bind-new-symbol",
+        "input": {
+          "save": {
+            "symbols": {
+              "dax": {
+                "color": "blue"
+              }
+            },
+            "room": "hall"
+          },
+          "encounters": [
+            {
+              "symbol": "quob",
+              "meaning": {
+                "tool": "large spoon"
+              }
+            }
+          ],
+          "query": "quob"
+        },
+        "expect": {
+          "meaning": {
+            "tool": "large spoon"
+          },
+          "save": {
+            "symbols": {
+              "dax": {
+                "color": "blue"
+              },
+              "quob": {
+                "tool": "large spoon"
+              }
+            },
+            "room": "hall"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 34,
+    "name": "reports-and-observations",
+    "title": "Reports and observations",
+    "operator": "observation",
+    "parameters": {
+      "statuses": {
+        "agree": "corroborated_by",
+        "disagree": "challenged_by"
+      }
+    },
+    "anchors": [
+      "observation",
+      "report"
+    ],
+    "cases": [
+      {
+        "name": "source-disagreement",
+        "input": {
+          "claim": {
+            "subject": "cup",
+            "property": "color",
+            "value": "blue",
+            "source": "lee"
+          },
+          "observations": [
+            {
+              "subject": "cup",
+              "property": "color",
+              "value": "blue",
+              "source": "mira"
+            },
+            {
+              "subject": "cup",
+              "property": "color",
+              "value": "red",
+              "source": "jo"
+            },
+            {
+              "subject": "bowl",
+              "property": "color",
+              "value": "yellow",
+              "source": "lee"
+            }
+          ]
+        },
+        "expect": {
+          "claim": {
+            "subject": "cup",
+            "property": "color",
+            "value": "blue",
+            "source": "lee"
+          },
+          "corroborated_by": [
+            "mira"
+          ],
+          "challenged_by": [
+            "jo"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "conflicting-facts",
+    "title": "Conflicting facts",
+    "operator": "conflict",
+    "parameters": {
+      "support_field": "sources"
+    },
+    "anchors": [
+      "fact",
+      "source"
+    ],
+    "cases": [
+      {
+        "name": "preserve-competing-accounts",
+        "input": {
+          "topic": {
+            "subject": "cup",
+            "property": "color"
+          },
+          "accounts": [
+            {
+              "subject": "cup",
+              "property": "color",
+              "value": "blue",
+              "source": "lee"
+            },
+            {
+              "subject": "cup",
+              "property": "color",
+              "value": "red",
+              "source": "jo"
+            },
+            {
+              "subject": "cup",
+              "property": "color",
+              "value": "blue",
+              "source": "mira"
+            },
+            {
+              "subject": "bowl",
+              "property": "color",
+              "value": "red",
+              "source": "al"
+            }
+          ]
+        },
+        "expect": {
+          "conflict": true,
+          "accounts": [
+            {
+              "value": "blue",
+              "sources": [
+                "lee",
+                "mira"
+              ]
+            },
+            {
+              "value": "red",
+              "sources": [
+                "jo"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 36,
+    "name": "unresolved-facts",
+    "title": "Unresolved facts",
+    "operator": "unresolved",
+    "parameters": {
+      "accepted_evidence": [
+        "posted",
+        "observed"
+      ],
+      "resolved": "resolved",
+      "unknown": "unknown"
+    },
+    "anchors": [
+      "fact",
+      "unknown"
+    ],
+    "cases": [
+      {
+        "name": "rumor-only",
+        "input": {
+          "question": "When does the shop close?",
+          "evidence": [
+            {
+              "question": "When does the shop close?",
+              "kind": "rumor",
+              "value": "six"
+            }
+          ]
+        },
+        "expect": {
+          "status": "unknown",
+          "value": null,
+          "revisit": "When does the shop close?"
+        }
+      },
+      {
+        "name": "revisit-with-posted-hours",
+        "input": {
+          "question": "When does the shop close?",
+          "evidence": [
+            {
+              "question": "When does the shop close?",
+              "kind": "rumor",
+              "value": "six"
+            },
+            {
+              "question": "When does the shop close?",
+              "kind": "posted",
+              "value": "eight"
+            }
+          ]
+        },
+        "expect": {
+          "status": "resolved",
+          "value": "eight"
+        }
+      }
+    ]
+  },
+  {
+    "id": 37,
+    "name": "perspective",
+    "title": "Perspective",
+    "operator": "perspective",
+    "parameters": {
+      "access": {
+        "seen": 3,
+        "told": 2,
+        "assumed": 1
+      }
+    },
+    "anchors": [
+      "person",
+      "belief"
+    ],
+    "cases": [
+      {
+        "name": "participant-relative-access",
+        "input": {
+          "participant": "lee",
+          "records": [
+            {
+              "participant": "lee",
+              "fact": "key",
+              "kind": "told",
+              "value": "drawer"
+            },
+            {
+              "participant": "lee",
+              "fact": "key",
+              "kind": "assumed",
+              "value": "shelf"
+            },
+            {
+              "participant": "mira",
+              "fact": "key",
+              "kind": "seen",
+              "value": "table"
+            },
+            {
+              "participant": "lee",
+              "fact": "cup",
+              "kind": "seen",
+              "value": "desk"
+            }
+          ]
+        },
+        "expect": {
+          "participant": "lee",
+          "knowledge": {
+            "key": {
+              "value": "drawer",
+              "basis": "told"
+            },
+            "cup": {
+              "value": "desk",
+              "basis": "seen"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 38,
+    "name": "beliefs-within-beliefs",
+    "title": "Beliefs within beliefs",
+    "operator": "beliefs",
+    "parameters": {
+      "known": "known",
+      "unknown": "unknown"
+    },
+    "anchors": [
+      "belief",
+      "person"
+    ],
+    "cases": [
+      {
+        "name": "nested-lee-in-mira",
+        "input": {
+          "perspectives": {
+            "mira": {
+              "facts": {
+                "key": "table"
+              },
+              "perspectives": {
+                "lee": {
+                  "facts": {
+                    "key": "drawer"
+                  }
+                }
+              }
+            },
+            "lee": {
+              "facts": {
+                "key": "shelf"
+              }
+            }
+          },
+          "path": [
+            "mira",
+            "lee"
+          ],
+          "proposition": {
+            "fact": "key",
+            "value": "drawer"
+          }
+        },
+        "expect": {
+          "status": "known",
+          "value": true
+        }
+      },
+      {
+        "name": "actual-lee-perspective",
+        "input": {
+          "perspectives": {
+            "mira": {
+              "facts": {
+                "key": "table"
+              },
+              "perspectives": {
+                "lee": {
+                  "facts": {
+                    "key": "drawer"
+                  }
+                }
+              }
+            },
+            "lee": {
+              "facts": {
+                "key": "shelf"
+              }
+            }
+          },
+          "path": [
+            "lee"
+          ],
+          "proposition": {
+            "fact": "key",
+            "value": "drawer"
+          }
+        },
+        "expect": {
+          "status": "known",
+          "value": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 39,
+    "name": "preferences",
+    "title": "Preferences",
+    "operator": "preferences",
+    "parameters": {
+      "missing_value": 0
+    },
+    "anchors": [
+      "preference",
+      "choice"
+    ],
+    "cases": [
+      {
+        "name": "different-optima",
+        "input": {
+          "preferences": {
+            "lee": {
+              "cost": -2,
+              "speed": 1
+            },
+            "mira": {
+              "cost": -1,
+              "speed": 3
+            }
+          },
+          "options": [
+            {
+              "id": "bus",
+              "attributes": {
+                "cost": 2,
+                "speed": 2
+              }
+            },
+            {
+              "id": "train",
+              "attributes": {
+                "cost": 4,
+                "speed": 5
+              }
+            }
+          ]
+        },
+        "expect": {
+          "lee": {
+            "preferred": [
+              "bus"
+            ],
+            "scores": {
+              "bus": -2,
+              "train": -3
+            }
+          },
+          "mira": {
+            "preferred": [
+              "train"
+            ],
+            "scores": {
+              "bus": 4,
+              "train": 11
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": 40,
+    "name": "situational-norms",
+    "title": "Situational norms",
+    "operator": "norms",
+    "parameters": {
+      "rules": {
+        "borrow": {
+          "expectation": "ask first",
+          "exceptions": [
+            {
+              "when": {
+                "permission": "already granted"
+              },
+              "expectation": "borrow within permission"
+            }
+          ]
+        }
+      }
+    },
+    "anchors": [
+      "permission",
+      "rule"
+    ],
+    "cases": [
+      {
+        "name": "default-borrowing",
+        "input": {
+          "action": "borrow",
+          "situation": {
+            "permission": "unknown"
+          }
+        },
+        "expect": {
+          "expectation": "ask first"
+        }
+      },
+      {
+        "name": "established-permission",
+        "input": {
+          "action": "borrow",
+          "situation": {
+            "permission": "already granted"
+          }
+        },
+        "expect": {
+          "expectation": "borrow within permission"
+        }
+      }
+    ]
+  },
+  {
+    "id": 41,
+    "name": "relevance-by-goal",
+    "title": "Relevance by goal",
+    "operator": "relevance",
+    "parameters": {
+      "dependencies": {
+        "commute": [
+          "ticket",
+          "delay"
+        ],
+        "delay": [
+          "rain"
+        ],
+        "outfit": [
+          "shoe-color"
+        ]
+      }
+    },
+    "anchors": [
+      "goal",
+      "fact"
+    ],
+    "cases": [
+      {
+        "name": "transitive-commute-facts",
+        "input": {
+          "goal": "commute",
+          "facts": [
+            {
+              "id": "rain",
+              "value": true
+            },
+            {
+              "id": "ticket",
+              "value": "valid"
+            },
+            {
+              "id": "shoe-color",
+              "value": "black"
+            },
+            {
+              "id": "delay",
+              "value": 10
+            }
+          ]
+        },
+        "expect": {
+          "facts": [
+            {
+              "id": "rain",
+              "value": true
+            },
+            {
+              "id": "ticket",
+              "value": "valid"
+            },
+            {
+              "id": "delay",
+              "value": 10
+            }
+          ]
+        }
+      },
+      {
+        "name": "outfit-facts",
+        "input": {
+          "goal": "outfit",
+          "facts": [
+            {
+              "id": "rain",
+              "value": true
+            },
+            {
+              "id": "ticket",
+              "value": "valid"
+            },
+            {
+              "id": "shoe-color",
+              "value": "black"
+            },
+            {
+              "id": "delay",
+              "value": 10
+            }
+          ]
+        },
+        "expect": {
+          "facts": [
+            {
+              "id": "shoe-color",
+              "value": "black"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "name": "fiction-and-hypotheticals",
+    "title": "Fiction and hypotheticals",
+    "operator": "hypothetical",
+    "parameters": {
+      "rules": [
+        {
+          "when": {
+            "ground": "wet"
+          },
+          "then": {
+            "shoes": "wet"
+          }
+        },
+        {
+          "when": {
+            "weather": "rain",
+            "door": "open"
+          },
+          "then": {
+            "ground": "wet"
+          }
+        }
+      ]
+    },
+    "anchors": [
+      "fiction",
+      "world"
+    ],
+    "cases": [
+      {
+        "name": "chained-counterfactual",
+        "input": {
+          "world": {
+            "weather": "clear",
+            "ground": "dry",
+            "shoes": "dry",
+            "door": "closed"
+          },
+          "assumptions": {
+            "weather": "rain",
+            "door": "open"
+          }
+        },
+        "expect": {
+          "world": {
+            "weather": "clear",
+            "ground": "dry",
+            "shoes": "dry",
+            "door": "closed"
+          },
+          "scenario": {
+            "weather": "rain",
+            "door": "open",
+            "ground": "wet",
+            "shoes": "wet"
+          },
+          "consequences": {
+            "ground": "wet",
+            "shoes": "wet"
+          }
+        }
+      },
+      {
+        "name": "closed-door",
+        "input": {
+          "world": {
+            "weather": "clear",
+            "ground": "dry",
+            "shoes": "dry",
+            "door": "closed"
+          },
+          "assumptions": {
+            "weather": "rain"
+          }
+        },
+        "expect": {
+          "world": {
+            "weather": "clear",
+            "ground": "dry",
+            "shoes": "dry",
+            "door": "closed"
+          },
+          "scenario": {
+            "weather": "rain",
+            "door": "closed",
+            "ground": "dry",
+            "shoes": "dry"
+          },
+          "consequences": {}
+        }
+      }
+    ]
+  }
+]

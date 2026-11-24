@@ -1,0 +1,10 @@
+{
+  "format": "vault-operations/1",
+  "operation_count": 80,
+  "files": [
+    {"path": "operations/language.vault", "module": "vault_language"},
+    {"path": "operations/world.vault", "module": "vault_world"},
+    {"path": "operations/execution.vault", "module": "vault_execution"},
+    {"path": "operations/state.vault", "module": "vault_state"}
+  ]
+}

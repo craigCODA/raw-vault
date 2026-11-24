@@ -1,0 +1,129 @@
+{
+  "format": "vault-commonsense/1",
+  "relations": {
+    "commonsense:usually_causes": {
+      "roles": ["condition", "expected effect"],
+      "cues": {"causes": "forward", "can cause": "forward", "leads to": "forward"}
+    },
+    "commonsense:prevents": {
+      "roles": ["blocking condition", "blocked effect"],
+      "cues": {"prevents": "forward", "stops": "forward", "blocks": "forward"}
+    },
+    "commonsense:requires": {
+      "roles": ["action or effect", "requirement"],
+      "cues": {"needs": "forward", "requires": "forward", "depends on": "forward"}
+    },
+    "commonsense:exception": {
+      "roles": ["expectation", "exception"],
+      "cues": {"unless": "forward", "except when": "forward", "except for": "forward"}
+    },
+    "commonsense:inside": {
+      "roles": ["object", "container"],
+      "cues": {"inside": "forward", "within": "forward"}
+    },
+    "commonsense:near": {
+      "roles": ["object", "nearby object"],
+      "cues": {"near": "forward", "beside": "forward", "next to": "forward"}
+    },
+    "commonsense:part_of": {
+      "roles": ["part", "whole"],
+      "cues": {"part of": "forward"}
+    },
+    "commonsense:before": {
+      "roles": ["earlier event", "later event"],
+      "cues": {"before": "forward", "after": "reverse"}
+    },
+    "commonsense:during": {
+      "roles": ["event", "concurrent event"],
+      "cues": {"during": "forward", "while": "forward"}
+    },
+    "commonsense:used_for": {
+      "roles": ["object", "purpose"],
+      "cues": {"used for": "forward", "designed for": "forward"}
+    },
+    "commonsense:made_of": {
+      "roles": ["object", "material"],
+      "cues": {"made of": "forward", "made from": "forward", "consists of": "forward"}
+    },
+    "commonsense:owned_by": {
+      "roles": ["object", "owner"],
+      "cues": {"belongs to": "forward", "owned by": "forward"}
+    },
+    "commonsense:enables": {
+      "roles": ["condition", "enabled action"],
+      "cues": {"allows": "forward", "enables": "forward", "lets": "forward"}
+    },
+    "commonsense:typically_has": {
+      "roles": ["object", "typical property"],
+      "cues": {"normally has": "forward", "typically has": "forward", "usually has": "forward"}
+    }
+  },
+  "defaults": {
+    "rain_wets_outdoor_surfaces": {
+      "relation": "commonsense:usually_causes",
+      "when": [["raining_at", "$place"], ["located_at", "$surface", "$place"], ["outdoor_surface", "$surface"]],
+      "unless": [["covered", "$surface"]],
+      "expect": ["wet", "$surface"]
+    },
+    "wet_walking_surface_may_be_slippery": {
+      "relation": "commonsense:usually_causes",
+      "when": [["wet", "$surface"], ["walking_surface", "$surface"]],
+      "unless": [["gritted", "$surface"], ["slip_resistant", "$surface"]],
+      "expect": ["slippery", "$surface"]
+    },
+    "contents_share_container_location": {
+      "relation": "commonsense:inside",
+      "when": [["inside", "$object", "$container"], ["located_at", "$container", "$place"]],
+      "unless": [["removed", "$object", "$container"]],
+      "expect": ["located_at", "$object", "$place"]
+    },
+    "held_objects_share_holder_location": {
+      "relation": "commonsense:near",
+      "when": [["holding", "$person", "$object"], ["located_at", "$person", "$place"]],
+      "unless": [["put_down", "$person", "$object"]],
+      "expect": ["located_at", "$object", "$place"]
+    },
+    "unsupported_objects_fall": {
+      "relation": "commonsense:usually_causes",
+      "when": [["dropped", "$object"], ["under_gravity", "$object"]],
+      "unless": [["supported", "$object"]],
+      "expect": ["falls", "$object"]
+    },
+    "unplugged_mains_devices_lose_power": {
+      "relation": "commonsense:requires",
+      "when": [["unplugged", "$device"], ["uses_mains_power", "$device"]],
+      "unless": [["backup_power", "$device"]],
+      "expect": ["powered_off", "$device"]
+    },
+    "working_powered_lights_light_rooms": {
+      "relation": "commonsense:enables",
+      "when": [["switched_on", "$light"], ["working_light", "$light"], ["power_available", "$light"], ["located_at", "$light", "$room"]],
+      "unless": [["powered_off", "$light"], ["blocked_light", "$light"]],
+      "expect": ["lit", "$room"]
+    },
+    "borrowed_items_are_expected_back": {
+      "relation": "commonsense:usually_causes",
+      "when": [["borrowed", "$person", "$item", "$owner"]],
+      "unless": [["gifted", "$owner", "$person", "$item"], ["waived_return", "$owner", "$item"]],
+      "expect": ["expected_return", "$person", "$item", "$owner"]
+    },
+    "closed_route_requires_an_alternative": {
+      "relation": "commonsense:prevents",
+      "when": [["trying_to_reach", "$person", "$place"], ["route_to", "$route", "$place"], ["closed", "$route"]],
+      "unless": [["can_use_closed_route", "$person", "$route"]],
+      "expect": ["needs_alternative_route", "$person", "$place"]
+    },
+    "more_volume_than_remaining_capacity_overflows": {
+      "relation": "commonsense:usually_causes",
+      "when": [["pouring", "$contents", "$container"], ["amount", "$contents", "$amount", "$unit"], ["remaining_capacity", "$container", "$capacity", "$unit"]],
+      "checks": [["amount", ">", "capacity"]],
+      "unless": [["draining", "$container"], ["expanding", "$container"]],
+      "expect": ["overflows", "$container"]
+    },
+    "local_definitions_resolve_a_label": {
+      "relation": "commonsense:enables",
+      "when": [["defined_as", "$label", "$object"]],
+      "expect": ["refers_to", "$label", "$object"]
+    }
+  }
+}

@@ -1,0 +1,202 @@
+[
+  {
+    "id": 65, "name": "resume-addresses", "title": "Resume addresses",
+    "operator": "resume_addresses", "parameters": {"execution": 55},
+    "anchors": ["state", "address"], "requires": [55, 59],
+    "cases": [{
+      "name": "resume at the second instruction",
+      "input": {"save": {"state": {"x": 9}, "cursor": "second"}, "links": {
+        "first": {"operation": 59, "input": {"state": {"$": "state"}, "values": {"step": 30}}, "write": {"x": {"$": "result.value"}}, "next": "second"},
+        "second": {"operation": 59, "input": {"state": {"$": "state"}, "values": {"step": 2}}, "write": {"x": {"$": "result.value"}}}
+      }},
+      "expect": {"state": {"x": 11}, "cursor": null, "status": "stopped", "steps": [{"address": "second"}]}
+    }]
+  },
+  {
+    "id": 66, "name": "state-differences", "title": "State differences",
+    "operator": "state_differences", "parameters": {},
+    "anchors": ["state", "change", "fact"],
+    "cases": [{
+      "name": "apply changes and remove a fact",
+      "input": {"before": {"a": 1, "b": "old", "flag": true, "keep": "fixed"}, "after": {"a": 2, "new": null, "flag": 1, "keep": "fixed"}},
+      "expect": {"difference": {"changed": {"a": 2, "flag": 1, "new": null}, "deleted": ["b"]}, "state": {"a": 2, "new": null, "flag": 1, "keep": "fixed"}, "matches_after": true}
+    }]
+  },
+  {
+    "id": 67, "name": "branching-saves", "title": "Branching saves",
+    "operator": "branching_saves", "parameters": {"resume": 65},
+    "anchors": ["branch", "state"], "requires": [65, 59],
+    "cases": [{
+      "name": "branch independently from x at five",
+      "input": {"save": {"state": {"x": 5}, "cursor": "increment"}, "branches": {"left": {"step": 2}, "right": {"step": -1}},
+        "links": {"increment": {"operation": 59, "input": {"state": {"$": "state"}, "values": {"$": "event"}}, "write": {"x": {"$": "result.value"}}}}},
+      "expect": {"save": {"state": {"x": 5}, "cursor": "increment"}, "branches": {"left": {"state": {"x": 7}}, "right": {"state": {"x": 4}}}}
+    }]
+  },
+  {
+    "id": 68, "name": "shared-states", "title": "Shared states",
+    "operator": "shared_states", "parameters": {},
+    "anchors": ["state", "equal", "event"],
+    "cases": [{
+      "name": "merge cycles while distinguishing a later output",
+      "input": {"events": ["tick"], "states": {
+        "a": {"tick": {"output": "wait", "next": "b"}}, "b": {"tick": {"output": "done", "next": "a"}},
+        "c": {"tick": {"output": "wait", "next": "d"}}, "d": {"tick": {"output": "done", "next": "c"}},
+        "e": {"tick": {"output": "wait", "next": "e"}}
+      }},
+      "expect": {"representatives": {"a": "a", "b": "b", "c": "a", "d": "b", "e": "e"}, "shared_count": 3}
+    }]
+  },
+  {
+    "id": 69, "name": "context-lifetimes", "title": "Context lifetimes",
+    "operator": "context_lifetimes",
+    "parameters": {"scopes": {"turn": ["conversation", "turn"], "conversation": ["conversation"], "situation": ["situation"], "persistent": []}},
+    "anchors": ["context", "conversation", "situation"],
+    "cases": [{
+      "name": "expire an old turn and an unrelated situation",
+      "input": {"scope": {"conversation": "c1", "turn": 3, "situation": "indoors"}, "facts": [
+        {"id": "current", "lifetime": "turn", "scope": {"conversation": "c1", "turn": 3}, "value": 1},
+        {"id": "old", "lifetime": "turn", "scope": {"conversation": "c1", "turn": 2}, "value": 2},
+        {"id": "same-turn-other-conversation", "lifetime": "turn", "scope": {"conversation": "c2", "turn": 3}, "value": 2},
+        {"id": "thread", "lifetime": "conversation", "scope": {"conversation": "c1"}, "value": 3},
+        {"id": "other-place", "lifetime": "situation", "scope": {"situation": "outdoors"}, "value": 4},
+        {"id": "current-place", "lifetime": "situation", "scope": {"situation": "indoors"}, "value": 5},
+        {"id": "always", "lifetime": "persistent", "value": 6}
+      ]},
+      "expect": {"facts": [{"id": "current", "value": 1}, {"id": "thread", "value": 3}, {"id": "current-place", "value": 5}, {"id": "always", "value": 6}], "expired": ["old", "same-turn-other-conversation", "other-place"]}
+    }]
+  },
+  {
+    "id": 70, "name": "computed-capabilities", "title": "Computed capabilities",
+    "operator": "computed_capabilities", "parameters": {},
+    "anchors": ["ability", "operation"],
+    "cases": [{
+      "name": "look up live operations and a missing capability",
+      "input": {"capabilities": {"advance": [59, "resume-addresses"], "unavailable": [59, "imaginary-capability"]}},
+      "expect": {"capabilities": {"advance": {"available": true, "missing": []}, "unavailable": {"available": false, "missing": ["imaginary-capability"]}}}
+    }]
+  },
+  {
+    "id": 71, "name": "identity-through-state-changes", "title": "Identity through state changes",
+    "operator": "identity_through_state_changes", "parameters": {},
+    "anchors": ["identity", "state"],
+    "cases": [{
+      "name": "verify the same core across changing saves",
+      "input": {"core": {"name": "Vault", "format": 1}, "before": {"core": {"format": 1, "name": "Vault"}, "state": {"x": 1}}, "after": {"core": {"name": "Vault", "format": 1}, "state": {"x": 2}}},
+      "expect": {"same_core": true, "distinct_saves": true}
+    }]
+  },
+  {
+    "id": 72, "name": "compact-decision-tables", "title": "Compact decision tables",
+    "operator": "compact_decision_tables", "parameters": {"transition": 58},
+    "anchors": ["decision", "table", "event"], "requires": [58],
+    "cases": [{
+      "name": "share the route for two open events",
+      "input": {"rows": [
+        {"state": "closed", "event": "unlock", "next": "open", "reply": "ready"},
+        {"state": "closed", "event": "override", "next": "open", "reply": "ready"},
+        {"state": "open", "event": "close", "next": "closed", "reply": "secured"}
+      ], "state": "closed", "event": "override"},
+      "expect": {"entry_count": 3, "route_count": 2, "addresses": {"[\"closed\",\"unlock\"]": 0, "[\"closed\",\"override\"]": 0}, "routes": [{"next": "open", "reply": "ready"}, {"next": "closed", "reply": "secured"}], "result": {"found": true, "state": "open", "reply": "ready"}}
+    }]
+  },
+  {
+    "id": 73, "name": "disk-locality", "title": "Disk locality",
+    "operator": "disk_locality", "parameters": {},
+    "anchors": ["disk", "record", "address"],
+    "cases": [{
+      "name": "reduce simulated block reads with grouped UTF-8 payloads",
+      "input": {"block_size": 4, "records": [
+        {"id": "a1", "group": "a", "payload": "é"}, {"id": "b1", "group": "b", "payload": "wxyz"},
+        {"id": "a2", "group": "a", "payload": "ab"}, {"id": "b2", "group": "b", "payload": "1234"}
+      ], "read": ["a1", "a2"]},
+      "expect": {"kind": "layout simulation", "before": {"blocks": [0, 1], "block_count": 2, "offsets": {"a2": 6}}, "after": {"blocks": [0], "block_count": 1, "offsets": {"a2": 2}}, "bytes_saved": 0}
+    }]
+  },
+  {
+    "id": 74, "name": "physical-triggers", "title": "Physical triggers",
+    "operator": "physical_triggers", "parameters": {"kinds": ["input", "timer", "startup"]},
+    "anchors": ["event", "input", "time"], "requires": [59],
+    "cases": [{
+      "name": "a timer dispatches its configured increment",
+      "input": {"event": {"kind": "timer", "name": "minute", "step": 7}, "state": {"x": 4},
+        "triggers": {"timer": {"minute": {"operation": 59, "input": {"state": {"$": "state"}, "values": {"step": {"$": "event.step"}}}}}}},
+      "expect": {"kind": "local simulation", "dispatched": true, "result": {"state": {"x": 11}, "value": 11}}
+    }]
+  },
+  {
+    "id": 75, "name": "same-words-different-save", "title": "Same words, different save",
+    "operator": "same_words_different_save", "parameters": {"resume": 65, "answer": "name"},
+    "anchors": ["word", "name", "state"], "requires": [65, 33],
+    "cases": [{
+      "name": "same question resolves to two remembered names",
+      "input": {"event": {"words": "What is my name?"}, "saves": {
+        "first": {"cursor": "answer", "state": {"symbols": {"What is my name?": "Mira"}}},
+        "second": {"cursor": "answer", "state": {"symbols": {"What is my name?": "Lee"}}}
+      }, "links": {"answer": {"operation": 33, "input": {"save": {"$": "state"}, "encounters": [], "query": {"$": "event.words"}}, "write": {"name": {"$": "result.meaning"}}}}},
+      "expect": {"event": {"words": "What is my name?"}, "answers": {"first": "Mira", "second": "Lee"}, "different": true}
+    }]
+  },
+  {
+    "id": 76, "name": "new-word-existing-operation", "title": "New word, existing operation",
+    "operator": "new_word_existing_operation", "parameters": {"encounter": 33},
+    "anchors": ["word", "symbol", "meaning"], "requires": [33],
+    "cases": [{
+      "name": "carry the zorb binding into a separate lookup",
+      "input": {"save": {"room": "hall", "symbols": {"dax": "blue cup"}}, "symbol": "zorb", "meaning": {"tool": "large spoon"}},
+      "expect": {"before": null, "save": {"room": "hall", "symbols": {"dax": "blue cup", "zorb": {"tool": "large spoon"}}}, "later": {"tool": "large spoon"}}
+    }]
+  },
+  {
+    "id": 77, "name": "one-changed-variable", "title": "One changed variable",
+    "operator": "one_changed_variable", "parameters": {"rules": "reasoning.vault"},
+    "anchors": ["change", "rain", "slippery"],
+    "cases": [{
+      "name": "a cover blocks the premise needed for slippery",
+      "input": {"situation": "example-commonsense.vault", "added_observation": ["covered", "[[path]]"]},
+      "expect": {"before": {"status": "expected", "expected": [
+        {"rule": "rain_wets_outdoor_surfaces", "fact": ["wet", "[[path]]"]},
+        {"rule": "wet_walking_surface_may_be_slippery", "fact": ["slippery", "[[path]]"]}
+      ]}, "after": {"status": "unknown", "expected": [], "blocked": [
+        {"rule": "rain_wets_outdoor_surfaces", "fact": ["wet", "[[path]]"], "by": ["covered", "[[path]]"]},
+        {"rule": "rain_wets_outdoor_surfaces", "fact": ["wet", "[[bridge]]"], "by": ["covered", "[[bridge]]"]}
+      ]}}
+    }]
+  },
+  {
+    "id": 78, "name": "competing-viewpoints", "title": "Competing viewpoints",
+    "operator": "competing_viewpoints", "parameters": {"perspective": 37},
+    "anchors": ["belief", "person"], "requires": [37],
+    "cases": [{
+      "name": "participants answer differently about the key",
+      "input": {"participants": ["mira", "lee"], "fact": "key", "records": [
+        {"participant": "mira", "fact": "key", "kind": "seen", "value": "table"},
+        {"participant": "lee", "fact": "key", "kind": "told", "value": "drawer"},
+        {"participant": "lee", "fact": "key", "kind": "assumed", "value": "shelf"}
+      ]},
+      "expect": {"answers": {"mira": {"value": "table", "basis": "seen"}, "lee": {"value": "drawer", "basis": "told"}}, "different": true}
+    }]
+  },
+  {
+    "id": 79, "name": "restore-and-replay", "title": "Restore and replay",
+    "operator": "restore_and_replay", "parameters": {"resume": 65},
+    "anchors": ["restore", "state", "input"], "requires": [65, 59],
+    "cases": [{
+      "name": "same input reproduces execution after JSON reload",
+      "input": {"save": {"cursor": "increment", "state": {"x": 10}}, "event": {"step": 2}, "links": {
+        "increment": {"operation": 59, "input": {"state": {"$": "state"}, "values": {"$": "event"}}, "write": {"x": {"$": "result.value"}}}
+      }},
+      "expect": {"equal": true, "restored": {"state": {"x": 12}, "steps": [{"address": "increment", "result": {"value": 12}}]}}
+    }]
+  },
+  {
+    "id": 80, "name": "measure-the-work", "title": "Measure the work",
+    "operator": "measure_the_work", "parameters": {},
+    "anchors": ["measure", "work", "operation"], "requires": [59],
+    "cases": [{
+      "name": "measure a real increment with declared parameters",
+      "input": {"operation": 59, "input": {"state": {"x": 5}, "values": {"step": 4}}},
+      "expect": {"result": {"state": {"x": 9}, "value": 9}, "operations": 1, "logical_bytes_read": 38}
+    }]
+  }
+]

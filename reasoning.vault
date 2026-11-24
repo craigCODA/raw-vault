@@ -1,0 +1,105 @@
+{
+  "format": "vault-reasoning/1",
+  "commonsense": "commonsense.vault",
+  "relations": {
+    "rhetoric:contrast": {
+      "roles": ["statement", "contrast"],
+      "cues": {"but": "forward", "however": "forward", "whereas": "forward", "in contrast": "forward"}
+    },
+    "rhetoric:concession": {
+      "roles": ["statement", "concession"],
+      "cues": {"although": "forward", "though": "forward", "even though": "forward"}
+    },
+    "rhetoric:reason": {
+      "roles": ["statement", "reason"],
+      "cues": {"because": "forward", "given that": "forward", "since": "forward"}
+    },
+    "rhetoric:result": {
+      "roles": ["cause", "result"],
+      "cues": {"therefore": "forward", "thus": "forward", "consequently": "forward", "as a result": "forward"}
+    },
+    "rhetoric:example": {
+      "roles": ["general statement", "example"],
+      "cues": {"for example": "forward", "such as": "forward", "for instance": "forward"}
+    },
+    "rhetoric:comparison": {
+      "roles": ["subject", "comparison"],
+      "cues": {"like": "forward", "similar to": "forward", "just as": "forward"}
+    },
+    "rhetoric:alternative": {
+      "roles": ["alternative", "other option"],
+      "cues": {"instead of": "forward", "alternatively": "forward", "rather than": "forward"}
+    },
+    "logic:and": {
+      "roles": ["first proposition", "second proposition"],
+      "cues": {"and": "forward"},
+      "truth": "a * b"
+    },
+    "logic:or": {
+      "roles": ["first proposition", "second proposition"],
+      "cues": {"or": "forward"},
+      "truth": "a + b - a * b"
+    },
+    "logic:xor": {
+      "roles": ["first proposition", "second proposition"],
+      "cues": {"xor": "forward", "exclusive or": "forward"},
+      "truth": "a + b - 2 * a * b"
+    },
+    "logic:implies": {
+      "roles": ["antecedent", "consequent"],
+      "cues": {"implies": "forward", "if": "reverse"},
+      "truth": "1 - a + a * b"
+    },
+    "logic:iff": {
+      "roles": ["first proposition", "second proposition"],
+      "cues": {"if and only if": "forward", "iff": "forward", "is equivalent to": "forward"},
+      "truth": "1 - a - b + 2 * a * b"
+    },
+    "argument:supports": {
+      "roles": ["premise", "claim"],
+      "cues": {"supports": "forward", "is evidence for": "forward", "because": "reverse"}
+    },
+    "argument:challenges": {
+      "roles": ["objection", "claim"],
+      "cues": {"challenges": "forward", "calls into question": "forward", "casts doubt on": "forward"}
+    },
+    "argument:rebuts": {
+      "roles": ["rebuttal", "objection"],
+      "cues": {"rebuts": "forward", "refutes": "forward", "contradicts": "forward"}
+    },
+    "argument:qualifies": {
+      "roles": ["claim", "limit"],
+      "cues": {"unless": "forward", "except when": "forward", "provided that": "forward"}
+    },
+    "argument:assumes": {
+      "roles": ["claim", "assumption"],
+      "cues": {"assumes": "forward", "presupposes": "forward", "depends on": "forward"}
+    },
+    "argument:concludes": {
+      "roles": ["premise", "conclusion"],
+      "cues": {"therefore": "forward", "hence": "forward", "consequently": "forward"}
+    },
+    "argument:answers": {
+      "roles": ["answer", "question"],
+      "cues": {"answers": "forward", "addresses": "forward", "in response to": "forward"}
+    }
+  },
+  "inference": {
+    "modus_ponens": {
+      "premises": [["logic:implies", "$p", "$q"], "$p"],
+      "conclusion": "$q"
+    },
+    "modus_tollens": {
+      "premises": [["logic:implies", "$p", "$q"], ["logic:not", "$q"]],
+      "conclusion": ["logic:not", "$p"]
+    },
+    "hypothetical_syllogism": {
+      "premises": [["logic:implies", "$p", "$q"], ["logic:implies", "$q", "$r"]],
+      "conclusion": ["logic:implies", "$p", "$r"]
+    },
+    "disjunctive_syllogism": {
+      "premises": [["logic:or", "$p", "$q"], ["logic:not", "$p"]],
+      "conclusion": "$q"
+    }
+  }
+}

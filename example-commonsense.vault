@@ -1,0 +1,13 @@
+{
+  "observed": [
+    ["raining_at", "[[park]]"],
+    ["located_at", "[[path]]", "[[park]]"],
+    ["outdoor_surface", "[[path]]"],
+    ["walking_surface", "[[path]]"],
+    ["located_at", "[[bridge]]", "[[park]]"],
+    ["outdoor_surface", "[[bridge]]"],
+    ["walking_surface", "[[bridge]]"],
+    ["covered", "[[bridge]]"]
+  ],
+  "c": ["slippery", "[[path]]"]
+}

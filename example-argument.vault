@@ -1,0 +1,12 @@
+{
+  "premises": [
+    ["logic:implies", "[[rain]]", "[[wet]]"],
+    ["logic:implies", "[[wet]]", "[[slippery]]"],
+    "[[rain]]"
+  ],
+  "steps": [
+    {"rule": "hypothetical_syllogism", "from": [0, 1]},
+    {"rule": "modus_ponens", "from": [3, 2]}
+  ],
+  "c": "[[slippery]]"
+}

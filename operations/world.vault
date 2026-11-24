@@ -1,0 +1,1787 @@
+[
+  {
+    "id": 21,
+    "name": "before-during-and-after",
+    "title": "Before, during, and after",
+    "operator": "temporal_position",
+    "parameters": {},
+    "anchors": [
+      "before",
+      "during",
+      "after"
+    ],
+    "cases": [
+      {
+        "name": "before start",
+        "input": {
+          "start": 5,
+          "end": 10,
+          "time": 3
+        },
+        "expect": {
+          "relation": "before",
+          "offset_from_start": -2
+        }
+      },
+      {
+        "name": "during closed interval",
+        "input": {
+          "start": 5,
+          "end": 10,
+          "time": 10
+        },
+        "expect": {
+          "relation": "during",
+          "offset_from_start": 5
+        }
+      },
+      {
+        "name": "after end",
+        "input": {
+          "start": 5,
+          "end": 10,
+          "time": 12
+        },
+        "expect": {
+          "relation": "after",
+          "offset_from_start": 7
+        }
+      }
+    ]
+  },
+  {
+    "id": 22,
+    "name": "duration",
+    "title": "Duration",
+    "operator": "interval_duration",
+    "parameters": {},
+    "anchors": [
+      "duration",
+      "time"
+    ],
+    "cases": [
+      {
+        "name": "fractional interval",
+        "input": {
+          "start": "1/3",
+          "end": "5/6"
+        },
+        "expect": {
+          "duration": "1/2",
+          "instantaneous": false
+        }
+      },
+      {
+        "name": "single instant",
+        "input": {
+          "start": 4,
+          "end": 4
+        },
+        "expect": {
+          "duration": 0,
+          "instantaneous": true
+        }
+      }
+    ]
+  },
+  {
+    "id": 23,
+    "name": "persistence",
+    "title": "Persistence",
+    "operator": "fact_persistence",
+    "parameters": {},
+    "anchors": [
+      "persistence",
+      "change"
+    ],
+    "cases": [
+      {
+        "name": "events through cutoff",
+        "input": {
+          "state": {
+            "lamp": "off",
+            "color": "blue"
+          },
+          "events": [
+            {
+              "time": 9,
+              "writes": {
+                "lamp": "off"
+              }
+            },
+            {
+              "time": 2,
+              "writes": {
+                "lamp": "on"
+              }
+            },
+            {
+              "time": 5,
+              "writes": {
+                "color": "green"
+              }
+            }
+          ],
+          "through": 5
+        },
+        "expect": {
+          "state": {
+            "lamp": "on",
+            "color": "green"
+          },
+          "applied": [
+            1,
+            2
+          ]
+        }
+      },
+      {
+        "name": "future change pending",
+        "input": {
+          "state": {
+            "lamp": "off"
+          },
+          "events": [
+            {
+              "time": 2,
+              "writes": {
+                "lamp": "on"
+              }
+            }
+          ],
+          "through": 1
+        },
+        "expect": {
+          "state": {
+            "lamp": "off"
+          },
+          "applied": []
+        }
+      }
+    ]
+  },
+  {
+    "id": 24,
+    "name": "containment",
+    "title": "Containment",
+    "operator": "containment_closure",
+    "parameters": {},
+    "anchors": [
+      "inside",
+      "container"
+    ],
+    "cases": [
+      {
+        "name": "nested containers",
+        "input": {
+          "item": "book",
+          "links": [
+            [
+              "book",
+              "bag"
+            ],
+            [
+              "bag",
+              "car"
+            ],
+            [
+              "car",
+              "garage"
+            ]
+          ],
+          "container": "garage"
+        },
+        "expect": {
+          "containers": [
+            "bag",
+            "car",
+            "garage"
+          ],
+          "contained": true
+        }
+      },
+      {
+        "name": "cycle and duplicate edge",
+        "input": {
+          "item": "book",
+          "links": [
+            [
+              "book",
+              "bag"
+            ],
+            [
+              "book",
+              "bag"
+            ],
+            [
+              "bag",
+              "book"
+            ],
+            [
+              "bag",
+              "car"
+            ]
+          ],
+          "container": "book"
+        },
+        "expect": {
+          "containers": [
+            "bag",
+            "car"
+          ],
+          "contained": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "part-and-whole",
+    "title": "Part and whole",
+    "operator": "part_requirements",
+    "parameters": {},
+    "anchors": [
+      "part",
+      "whole"
+    ],
+    "cases": [
+      {
+        "name": "absent and unsuitable parts",
+        "input": {
+          "parts": {
+            "tire": {
+              "pressure": 20
+            }
+          },
+          "requires": [
+            {
+              "part": "tire",
+              "when": {
+                "path": "pressure",
+                "op": "ge",
+                "value": 30
+              }
+            },
+            {
+              "part": "brake"
+            }
+          ]
+        },
+        "expect": {
+          "available": false,
+          "missing": [
+            "brake"
+          ],
+          "unsuitable": [
+            "tire"
+          ]
+        }
+      },
+      {
+        "name": "working assembly",
+        "input": {
+          "parts": {
+            "tire": {
+              "pressure": 33
+            },
+            "brake": {}
+          },
+          "requires": [
+            {
+              "part": "tire",
+              "when": {
+                "path": "pressure",
+                "op": "ge",
+                "value": 30
+              }
+            },
+            {
+              "part": "brake"
+            }
+          ]
+        },
+        "expect": {
+          "available": true,
+          "missing": [],
+          "unsuitable": []
+        }
+      }
+    ]
+  },
+  {
+    "id": 26,
+    "name": "orientation",
+    "title": "Orientation",
+    "operator": "planar_orientation",
+    "parameters": {},
+    "anchors": [
+      "orientation",
+      "rotation"
+    ],
+    "cases": [
+      {
+        "name": "rotate about translated origin",
+        "input": {
+          "point": [
+            3,
+            2
+          ],
+          "origin": [
+            1,
+            1
+          ],
+          "quarter_turns": 1
+        },
+        "expect": {
+          "point": [
+            0,
+            3
+          ]
+        }
+      },
+      {
+        "name": "clockwise fractional coordinate",
+        "input": {
+          "point": [
+            "1/2",
+            3
+          ],
+          "quarter_turns": -1
+        },
+        "expect": {
+          "point": [
+            3,
+            "-1/2"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 27,
+    "name": "units-and-capacity",
+    "title": "Units and capacity",
+    "operator": "unit_capacity",
+    "parameters": {
+      "units": {
+        "liter": {
+          "dimension": "volume",
+          "factor": 1000
+        },
+        "milliliter": {
+          "dimension": "volume",
+          "factor": 1
+        },
+        "gram": {
+          "dimension": "mass",
+          "factor": 1
+        }
+      }
+    },
+    "anchors": [
+      "units",
+      "capacity"
+    ],
+    "cases": [
+      {
+        "name": "exact conversion and fit",
+        "input": {
+          "amount": {
+            "value": "3/8",
+            "unit": "liter"
+          },
+          "capacity": {
+            "value": 400,
+            "unit": "milliliter"
+          }
+        },
+        "expect": {
+          "comparable": true,
+          "converted": 375,
+          "remaining": 25,
+          "fits": true,
+          "unit": "milliliter"
+        }
+      },
+      {
+        "name": "insufficient capacity",
+        "input": {
+          "amount": {
+            "value": 1100,
+            "unit": "milliliter"
+          },
+          "capacity": {
+            "value": 1,
+            "unit": "liter"
+          }
+        },
+        "expect": {
+          "converted": "11/10",
+          "remaining": "-1/10",
+          "fits": false
+        }
+      },
+      {
+        "name": "dimensions differ",
+        "input": {
+          "amount": {
+            "value": 400,
+            "unit": "gram"
+          },
+          "capacity": {
+            "value": 400,
+            "unit": "milliliter"
+          }
+        },
+        "expect": {
+          "comparable": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 28,
+    "name": "preconditions",
+    "title": "Preconditions",
+    "operator": "action_preconditions",
+    "parameters": {},
+    "anchors": [
+      "condition",
+      "action"
+    ],
+    "cases": [
+      {
+        "name": "locked and out of reach",
+        "input": {
+          "action": {
+            "requires": [
+              {
+                "name": "unlocked",
+                "when": {
+                  "path": "locked",
+                  "value": false
+                }
+              },
+              {
+                "name": "nearby",
+                "when": {
+                  "path": "nearby",
+                  "value": true
+                }
+              }
+            ],
+            "writes": {
+              "open": true
+            }
+          },
+          "state": {
+            "locked": true,
+            "nearby": false
+          }
+        },
+        "expect": {
+          "applicable": false,
+          "missing": [
+            "unlocked",
+            "nearby"
+          ]
+        }
+      },
+      {
+        "name": "meets both requirements",
+        "input": {
+          "action": {
+            "requires": [
+              {
+                "name": "unlocked",
+                "when": {
+                  "path": "locked",
+                  "value": false
+                }
+              },
+              {
+                "name": "nearby",
+                "when": {
+                  "path": "nearby",
+                  "value": true
+                }
+              }
+            ],
+            "writes": {
+              "open": true
+            }
+          },
+          "state": {
+            "locked": false,
+            "nearby": true
+          }
+        },
+        "expect": {
+          "applicable": true,
+          "missing": []
+        }
+      }
+    ]
+  },
+  {
+    "id": 29,
+    "name": "action-effects",
+    "title": "Action effects",
+    "operator": "action_effects",
+    "parameters": {},
+    "anchors": [
+      "action",
+      "effect"
+    ],
+    "cases": [
+      {
+        "name": "take and move an item",
+        "input": {
+          "action": {
+            "requires": [
+              {
+                "name": "hand free",
+                "when": {
+                  "path": "holding",
+                  "value": null
+                }
+              }
+            ],
+            "writes": {
+              "holding": {
+                "$": "inputs.item"
+              },
+              "location": {
+                "$": "inputs.destination"
+              }
+            }
+          },
+          "state": {
+            "holding": null,
+            "location": "room",
+            "locked": false
+          },
+          "inputs": {
+            "item": "book",
+            "destination": "hall"
+          }
+        },
+        "expect": {
+          "applied": true,
+          "writes": {
+            "holding": "book",
+            "location": "hall"
+          },
+          "state": {
+            "holding": "book",
+            "location": "hall",
+            "locked": false
+          },
+          "missing": []
+        }
+      },
+      {
+        "name": "blocked open changes nothing",
+        "input": {
+          "action": {
+            "requires": [
+              {
+                "name": "unlocked",
+                "when": {
+                  "path": "locked",
+                  "value": false
+                }
+              },
+              {
+                "name": "nearby",
+                "when": {
+                  "path": "nearby",
+                  "value": true
+                }
+              }
+            ],
+            "writes": {
+              "open": true
+            }
+          },
+          "state": {
+            "locked": true,
+            "nearby": true,
+            "open": false
+          }
+        },
+        "expect": {
+          "applied": false,
+          "writes": {},
+          "state": {
+            "open": false
+          },
+          "missing": [
+            "unlocked"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 30,
+    "name": "available-actions",
+    "title": "Available actions",
+    "operator": "available_actions",
+    "parameters": {},
+    "anchors": [
+      "available",
+      "actions"
+    ],
+    "cases": [
+      {
+        "name": "filter actions by current state",
+        "input": {
+          "actions": {
+            "open": {
+              "requires": [
+                {
+                  "name": "unlocked",
+                  "when": {
+                    "path": "locked",
+                    "value": false
+                  }
+                },
+                {
+                  "name": "nearby",
+                  "when": {
+                    "path": "nearby",
+                    "value": true
+                  }
+                }
+              ],
+              "writes": {
+                "open": true
+              }
+            },
+            "wait": {},
+            "lock": {
+              "requires": [
+                {
+                  "name": "closed",
+                  "when": {
+                    "path": "open",
+                    "value": false
+                  }
+                }
+              ]
+            }
+          },
+          "state": {
+            "locked": true,
+            "nearby": true,
+            "open": false
+          }
+        },
+        "expect": {
+          "actions": [
+            "wait",
+            "lock"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 31,
+    "name": "resources",
+    "title": "Resources",
+    "operator": "resource_budget",
+    "parameters": {},
+    "anchors": [
+      "resources",
+      "cost"
+    ],
+    "cases": [
+      {
+        "name": "reject a request without charging any resource",
+        "input": {
+          "budget": {
+            "coins": 7,
+            "energy": 3
+          },
+          "requests": [
+            {
+              "name": "repair",
+              "cost": {
+                "coins": 4,
+                "energy": 1
+              }
+            },
+            {
+              "name": "travel",
+              "cost": {
+                "coins": 4,
+                "energy": 2
+              }
+            },
+            {
+              "name": "signal",
+              "cost": {
+                "coins": 1,
+                "energy": 2
+              }
+            }
+          ]
+        },
+        "expect": {
+          "remaining": {
+            "coins": 2,
+            "energy": 0
+          },
+          "applied": [
+            "repair",
+            "signal"
+          ],
+          "blocked": [
+            {
+              "request": "travel",
+              "shortfalls": {
+                "coins": 1
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "unknown resource has zero budget",
+        "input": {
+          "budget": {},
+          "requests": [
+            {
+              "name": "travel",
+              "cost": {
+                "fuel": "1/2"
+              }
+            }
+          ]
+        },
+        "expect": {
+          "remaining": {},
+          "applied": [],
+          "blocked": [
+            {
+              "request": "travel",
+              "shortfalls": {
+                "fuel": "1/2"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 32,
+    "name": "feedback",
+    "title": "Feedback",
+    "operator": "numeric_feedback",
+    "parameters": {
+      "max_steps": 64
+    },
+    "anchors": [
+      "feedback",
+      "step"
+    ],
+    "cases": [
+      {
+        "name": "end early at declared goal",
+        "input": {
+          "start": 16,
+          "steps": 6,
+          "expression": "value/2",
+          "goal": {
+            "path": "value",
+            "op": "le",
+            "value": 2
+          }
+        },
+        "expect": {
+          "history": [
+            16,
+            8,
+            4,
+            2
+          ],
+          "value": 2,
+          "reached": true
+        }
+      },
+      {
+        "name": "allowance exhausted before goal",
+        "input": {
+          "start": 3,
+          "steps": 2,
+          "expression": "value/2",
+          "goal": {
+            "path": "value",
+            "value": 0
+          }
+        },
+        "expect": {
+          "history": [
+            3,
+            "3/2",
+            "3/4"
+          ],
+          "value": "3/4",
+          "reached": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "name": "quantifiers",
+    "title": "Quantifiers",
+    "operator": "finite_quantifiers",
+    "parameters": {},
+    "anchors": [
+      "some",
+      "all",
+      "none",
+      "exactly"
+    ],
+    "cases": [
+      {
+        "name": "only one witness",
+        "input": {
+          "items": [
+            {
+              "id": "a",
+              "good": false
+            },
+            {
+              "id": "b",
+              "good": true
+            }
+          ],
+          "test": {
+            "path": "item.good",
+            "value": true
+          }
+        },
+        "expect": {
+          "some": true,
+          "all": false,
+          "none": false,
+          "exactly_one": true,
+          "matches": [
+            {
+              "id": "b",
+              "good": true
+            }
+          ]
+        }
+      },
+      {
+        "name": "empty collection",
+        "input": {
+          "items": [],
+          "test": {
+            "path": "item.good",
+            "value": true
+          }
+        },
+        "expect": {
+          "some": false,
+          "all": true,
+          "none": true,
+          "exactly_one": false,
+          "matches": []
+        }
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "name": "variable-binding",
+    "title": "Variable binding",
+    "operator": "bind_relation",
+    "parameters": {},
+    "anchors": [
+      "variable",
+      "binding"
+    ],
+    "cases": [
+      {
+        "name": "instantiate inverse relation",
+        "input": {
+          "pattern": [
+            "contains",
+            "$container",
+            "$item"
+          ],
+          "term": [
+            "contains",
+            "bag",
+            "book"
+          ],
+          "result": [
+            "inside",
+            "$item",
+            "$container"
+          ]
+        },
+        "expect": {
+          "matched": true,
+          "bindings": {
+            "$container": "bag",
+            "$item": "book"
+          },
+          "result": [
+            "inside",
+            "book",
+            "bag"
+          ]
+        }
+      },
+      {
+        "name": "repeated variable mismatch",
+        "input": {
+          "pattern": [
+            "equal",
+            "$item",
+            "$item"
+          ],
+          "term": [
+            "equal",
+            "book",
+            "bag"
+          ],
+          "result": [
+            "same",
+            "$item"
+          ]
+        },
+        "expect": {
+          "matched": false,
+          "bindings": {}
+        }
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "name": "condition-combinations",
+    "title": "Condition combinations",
+    "operator": "combine_conditions",
+    "parameters": {},
+    "anchors": [
+      "condition",
+      "and",
+      "or",
+      "not"
+    ],
+    "cases": [
+      {
+        "name": "nested premises hold",
+        "input": {
+          "facts": {
+            "ready": true,
+            "key": false,
+            "code": true,
+            "locked": false
+          },
+          "premises": {
+            "all": [
+              {
+                "path": "ready",
+                "value": true
+              },
+              {
+                "any": [
+                  {
+                    "path": "key",
+                    "value": true
+                  },
+                  {
+                    "path": "code",
+                    "value": true
+                  }
+                ]
+              },
+              {
+                "not": {
+                  "path": "locked",
+                  "value": true
+                }
+              }
+            ]
+          }
+        },
+        "expect": {
+          "satisfied": true
+        }
+      },
+      {
+        "name": "negated condition fails",
+        "input": {
+          "facts": {
+            "ready": true,
+            "code": true,
+            "locked": true
+          },
+          "premises": {
+            "all": [
+              {
+                "path": "ready",
+                "value": true
+              },
+              {
+                "path": "code",
+                "value": true
+              },
+              {
+                "not": {
+                  "path": "locked",
+                  "value": true
+                }
+              }
+            ]
+          }
+        },
+        "expect": {
+          "satisfied": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "name": "reverse-solving",
+    "title": "Reverse solving",
+    "operator": "reverse_equation",
+    "parameters": {},
+    "anchors": [
+      "solve",
+      "equation"
+    ],
+    "cases": [
+      {
+        "name": "solve with variable coefficient",
+        "input": {
+          "equation": "a*c+b=d",
+          "known": {
+            "a": 6,
+            "b": 1,
+            "d": 16
+          }
+        },
+        "expect": {
+          "target": "c",
+          "value": "5/2"
+        }
+      },
+      {
+        "name": "solve with target in denominator",
+        "input": {
+          "equation": "a/c=b",
+          "known": {
+            "a": 12,
+            "b": 3
+          }
+        },
+        "expect": {
+          "target": "c",
+          "value": 4
+        }
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "name": "multiple-solutions",
+    "title": "Multiple solutions",
+    "operator": "finite_solutions",
+    "parameters": {
+      "max_assignments": 10000
+    },
+    "anchors": [
+      "multiple",
+      "solutions"
+    ],
+    "cases": [
+      {
+        "name": "combined constraints leave one solution",
+        "input": {
+          "domains": {
+            "x": [
+              0,
+              1,
+              2
+            ],
+            "y": [
+              1,
+              2
+            ]
+          },
+          "constraint": {
+            "all": [
+              {
+                "path": "x",
+                "op": "lt",
+                "value": {
+                  "$": "y"
+                }
+              },
+              {
+                "path": "x",
+                "op": "gt",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "expect": {
+          "solutions": [
+            {
+              "x": 1,
+              "y": 2
+            }
+          ],
+          "count": 1
+        }
+      },
+      {
+        "name": "several satisfying assignments",
+        "input": {
+          "domains": {
+            "x": [
+              0,
+              1,
+              2
+            ],
+            "y": [
+              1,
+              2
+            ]
+          },
+          "constraint": {
+            "path": "x",
+            "op": "lt",
+            "value": {
+              "$": "y"
+            }
+          }
+        },
+        "expect": {
+          "solutions": [
+            {
+              "x": 0,
+              "y": 1
+            },
+            {
+              "x": 0,
+              "y": 2
+            },
+            {
+              "x": 1,
+              "y": 2
+            }
+          ],
+          "count": 3
+        }
+      }
+    ]
+  },
+  {
+    "id": 48,
+    "name": "counterexamples",
+    "title": "Counterexamples",
+    "operator": "counterexample_search",
+    "parameters": {
+      "max_assignments": 10000
+    },
+    "anchors": [
+      "example",
+      "rule"
+    ],
+    "cases": [
+      {
+        "name": "find violating witness",
+        "input": {
+          "domains": {
+            "x": [
+              -1,
+              0,
+              1
+            ]
+          },
+          "premise": {
+            "path": "x",
+            "op": "ge",
+            "value": 0
+          },
+          "conclusion": {
+            "path": "x",
+            "op": "gt",
+            "value": 0
+          }
+        },
+        "expect": {
+          "holds_on_domain": false,
+          "witness": {
+            "x": 0
+          }
+        }
+      },
+      {
+        "name": "no witness on supplied domain",
+        "input": {
+          "domains": {
+            "x": [
+              -1,
+              0,
+              1
+            ]
+          },
+          "premise": {
+            "path": "x",
+            "op": "gt",
+            "value": 0
+          },
+          "conclusion": {
+            "path": "x",
+            "op": "ge",
+            "value": 0
+          }
+        },
+        "expect": {
+          "holds_on_domain": true,
+          "witness": null
+        }
+      }
+    ]
+  },
+  {
+    "id": 49,
+    "name": "alternative-explanations",
+    "title": "Alternative explanations",
+    "operator": "alternative_explanations",
+    "parameters": {},
+    "anchors": [
+      "alternative",
+      "explanations"
+    ],
+    "cases": [
+      {
+        "name": "two compatible causes",
+        "input": {
+          "effect": "stopped",
+          "observed": {
+            "stopped": true
+          },
+          "explanations": {
+            "stalled": {
+              "stopped": true,
+              "power": true,
+              "noise": false
+            },
+            "outage": {
+              "stopped": true,
+              "power": false,
+              "noise": false
+            },
+            "running": {
+              "stopped": false,
+              "power": true
+            }
+          }
+        },
+        "expect": {
+          "possible": [
+            "stalled",
+            "outage"
+          ],
+          "unresolved": []
+        }
+      },
+      {
+        "name": "unknown effect remains unresolved",
+        "input": {
+          "effect": "stopped",
+          "observed": {
+            "stopped": true,
+            "power": false
+          },
+          "explanations": {
+            "stalled": {
+              "stopped": true,
+              "power": true,
+              "noise": false
+            },
+            "outage": {
+              "stopped": true,
+              "power": false,
+              "noise": false
+            },
+            "running": {
+              "stopped": false,
+              "power": true
+            },
+            "unknown": {
+              "power": false
+            }
+          }
+        },
+        "expect": {
+          "possible": [
+            "outage"
+          ],
+          "unresolved": [
+            "unknown"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": 50,
+    "name": "distinguishing-evidence",
+    "title": "Distinguishing evidence",
+    "operator": "distinguish_observations",
+    "parameters": {},
+    "anchors": [
+      "distinguish",
+      "evidence"
+    ],
+    "cases": [
+      {
+        "name": "only power separates competing predictions",
+        "input": {
+          "observed": {
+            "stopped": true
+          },
+          "explanations": {
+            "stalled": {
+              "stopped": true,
+              "power": true,
+              "noise": false
+            },
+            "outage": {
+              "stopped": true,
+              "power": false,
+              "noise": false
+            },
+            "running": {
+              "stopped": false,
+              "power": true
+            }
+          },
+          "candidates": [
+            "noise",
+            "power",
+            "temperature"
+          ]
+        },
+        "expect": {
+          "distinguishing": {
+            "power": {
+              "stalled": true,
+              "outage": false
+            }
+          }
+        }
+      },
+      {
+        "name": "existing observation leaves one candidate",
+        "input": {
+          "observed": {
+            "stopped": true,
+            "power": false
+          },
+          "explanations": {
+            "stalled": {
+              "stopped": true,
+              "power": true,
+              "noise": false
+            },
+            "outage": {
+              "stopped": true,
+              "power": false,
+              "noise": false
+            },
+            "running": {
+              "stopped": false,
+              "power": true
+            }
+          },
+          "candidates": [
+            "noise",
+            "power"
+          ]
+        },
+        "expect": {
+          "distinguishing": {}
+        }
+      }
+    ]
+  },
+  {
+    "id": 51,
+    "name": "counterfactuals",
+    "title": "Counterfactuals",
+    "operator": "compare_counterfactual",
+    "parameters": {},
+    "anchors": [
+      "condition",
+      "consequence"
+    ],
+    "cases": [
+      {
+        "name": "remove enabling fact",
+        "input": {
+          "state": {
+            "key": true,
+            "door": "closed"
+          },
+          "change": {
+            "key": "key",
+            "value": false
+          },
+          "consequence": {
+            "all": [
+              {
+                "path": "key",
+                "value": true
+              },
+              {
+                "path": "door",
+                "value": "closed"
+              }
+            ]
+          }
+        },
+        "expect": {
+          "actual": true,
+          "hypothetical": false,
+          "changed": true
+        }
+      },
+      {
+        "name": "change an unrelated fact",
+        "input": {
+          "state": {
+            "key": true,
+            "door": "closed"
+          },
+          "change": {
+            "key": "color",
+            "value": "red"
+          },
+          "consequence": {
+            "path": "key",
+            "value": true
+          }
+        },
+        "expect": {
+          "actual": true,
+          "hypothetical": true,
+          "changed": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 52,
+    "name": "argument-warrants",
+    "title": "Argument warrants",
+    "operator": "argument_support",
+    "parameters": {},
+    "anchors": [
+      "argument",
+      "support"
+    ],
+    "cases": [
+      {
+        "name": "supports the declared claim",
+        "input": {
+          "claim": "paid",
+          "facts": {
+            "receipt": true,
+            "entry": "settled",
+            "signed": false,
+            "quote": true
+          },
+          "warrants": {
+            "receipt": {
+              "claim": "paid",
+              "when": {
+                "path": "receipt",
+                "value": true
+              }
+            },
+            "ledger": {
+              "claim": "paid",
+              "when": {
+                "all": [
+                  {
+                    "path": "entry",
+                    "value": "settled"
+                  },
+                  {
+                    "path": "signed",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            "quote": {
+              "claim": "priced",
+              "when": {
+                "path": "quote",
+                "value": true
+              }
+            }
+          }
+        },
+        "expect": {
+          "supported": true,
+          "supported_by": [
+            "receipt"
+          ]
+        }
+      },
+      {
+        "name": "available evidence supports another claim",
+        "input": {
+          "claim": "paid",
+          "facts": {
+            "quote": true
+          },
+          "warrants": {
+            "receipt": {
+              "claim": "paid",
+              "when": {
+                "path": "receipt",
+                "value": true
+              }
+            },
+            "ledger": {
+              "claim": "paid",
+              "when": {
+                "all": [
+                  {
+                    "path": "entry",
+                    "value": "settled"
+                  },
+                  {
+                    "path": "signed",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            "quote": {
+              "claim": "priced",
+              "when": {
+                "path": "quote",
+                "value": true
+              }
+            }
+          }
+        },
+        "expect": {
+          "supported": false,
+          "supported_by": []
+        }
+      }
+    ]
+  },
+  {
+    "id": 53,
+    "name": "objection-and-repair",
+    "title": "Objection and repair",
+    "operator": "objection_repair",
+    "parameters": {},
+    "anchors": [
+      "objection",
+      "repair"
+    ],
+    "cases": [
+      {
+        "name": "new evidence bridges retracted support",
+        "input": {
+          "claim": "paid",
+          "facts": {
+            "receipt": true,
+            "entry": "settled"
+          },
+          "objection": {
+            "retract": [
+              "receipt"
+            ]
+          },
+          "repair": {
+            "signed": true
+          },
+          "warrants": {
+            "receipt": {
+              "claim": "paid",
+              "when": {
+                "path": "receipt",
+                "value": true
+              }
+            },
+            "ledger": {
+              "claim": "paid",
+              "when": {
+                "all": [
+                  {
+                    "path": "entry",
+                    "value": "settled"
+                  },
+                  {
+                    "path": "signed",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            "quote": {
+              "claim": "priced",
+              "when": {
+                "path": "quote",
+                "value": true
+              }
+            }
+          }
+        },
+        "expect": {
+          "initial": [
+            "receipt"
+          ],
+          "challenged": [],
+          "repaired": [
+            "ledger"
+          ],
+          "supported": true
+        }
+      },
+      {
+        "name": "repair still lacks a necessary premise",
+        "input": {
+          "claim": "paid",
+          "facts": {
+            "receipt": true,
+            "entry": "pending"
+          },
+          "objection": {
+            "retract": [
+              "receipt"
+            ]
+          },
+          "repair": {
+            "signed": true
+          },
+          "warrants": {
+            "receipt": {
+              "claim": "paid",
+              "when": {
+                "path": "receipt",
+                "value": true
+              }
+            },
+            "ledger": {
+              "claim": "paid",
+              "when": {
+                "all": [
+                  {
+                    "path": "entry",
+                    "value": "settled"
+                  },
+                  {
+                    "path": "signed",
+                    "value": true
+                  }
+                ]
+              }
+            },
+            "quote": {
+              "claim": "priced",
+              "when": {
+                "path": "quote",
+                "value": true
+              }
+            }
+          }
+        },
+        "expect": {
+          "initial": [
+            "receipt"
+          ],
+          "challenged": [],
+          "repaired": [],
+          "supported": false
+        }
+      }
+    ]
+  },
+  {
+    "id": 54,
+    "name": "analogical-reasoning",
+    "title": "Analogical reasoning",
+    "operator": "structural_analogy",
+    "parameters": {},
+    "anchors": [
+      "analogy",
+      "relation"
+    ],
+    "cases": [
+      {
+        "name": "preserve roles under structural mapping",
+        "input": {
+          "source": [
+            "orbits",
+            "moon",
+            "planet"
+          ],
+          "relations": {
+            "orbits": "revolves-around"
+          },
+          "correspondence": {
+            "moon": "electron",
+            "planet": "nucleus"
+          }
+        },
+        "expect": {
+          "mapped": true,
+          "target": [
+            "revolves-around",
+            "electron",
+            "nucleus"
+          ]
+        }
+      },
+      {
+        "name": "map requires each source role",
+        "input": {
+          "source": [
+            "contains",
+            "bag",
+            "book"
+          ],
+          "relations": {
+            "contains": "stores"
+          },
+          "correspondence": {
+            "bag": "shelf"
+          }
+        },
+        "expect": {
+          "mapped": false,
+          "missing_relation": false,
+          "missing_roles": [
+            "book"
+          ]
+        }
+      }
+    ]
+  }
+]

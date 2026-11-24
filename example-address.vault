@@ -1,0 +1,12 @@
+{
+  "address": {"position": "119517139977775", "links": 1, "width": 1},
+  "input": [
+    {
+      "when": {"path": "relation.name", "value": "logic:and"},
+      "arguments": {
+        "state": {"x": {"$": "left.0"}},
+        "values": {"step": {"$": "right.0"}}
+      }
+    }
+  ]
+}

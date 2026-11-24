@@ -1,0 +1,33 @@
+{
+  "format": "vault-identity/1",
+  "values": "raw/values.bin",
+  "database": "raw/language.sqlite",
+  "assets": {
+    "reasoning": "reasoning.vault",
+    "commonsense": "commonsense.vault",
+    "operation_catalog": "operations.vault"
+  },
+  "identity": {
+    "operation": "sha256",
+    "inputs": ["values", "database", "reasoning", "commonsense", "operation_catalog"]
+  },
+  "measure": {
+    "vocabulary_entries": ["raw_entries", "occurrences"],
+    "addressable_keys": ["nodes"],
+    "text_links": ["links"],
+    "continuation_links": ["response_edges"],
+    "data_records": ["data_records", "occurrences"],
+    "relation_types": ["reasoning_relations"],
+    "reasoning_cue_links": ["reasoning_evidence"],
+    "compiled_operations": ["operations"],
+    "operation_cases": ["operation_cases"],
+    "operation_anchors": ["operation_anchors"]
+  },
+  "compute": {
+    "scalar_values": "float32_values + uint16_values + decimal_values",
+    "ordered_one_key_pairs": "addressable_keys * addressable_keys",
+    "ordered_one_link_chains": "ordered_one_key_pairs * relation_types",
+    "ordered_three_link_chains": "ordered_one_key_pairs * ordered_one_key_pairs * relation_types * relation_types * relation_types",
+    "ordered_one_operation_links": "ordered_one_link_chains * compiled_operations"
+  }
+}

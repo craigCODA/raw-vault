@@ -1,0 +1,33 @@
+{
+  "operation": 55,
+  "input": {
+    "cursor": "interpret",
+    "state": {"save": {"symbols": {"my name": "Craig"}}},
+    "event": {"kind": "message", "text": "What is my name?"},
+    "links": {
+      "interpret": {
+        "when": {"path": "event.kind", "value": "message"},
+        "operation": 12,
+        "input": {"utterance": {"$": "event.text"}},
+        "write": {"intent": {"$": "result"}},
+        "next": "recall"
+      },
+      "recall": {
+        "when": {"path": "state.intent.intent", "value": "answer"},
+        "operation": 33,
+        "input": {"save": {"$": "state.save"}, "encounters": [], "query": {"$": "state.intent.goal"}},
+        "write": {"answer": {"$": "result.meaning"}},
+        "next": "reply"
+      },
+      "reply": {
+        "operation": 20,
+        "input": {"format": {"$": "state.intent.intent"}, "conclusion": {"$": "state.answer"}},
+        "write": {"reply": {"$": "result.text"}}
+      }
+    },
+    "c": {"all": [
+      {"path": "state.reply", "op": "ne", "value": null},
+      {"path": "state.reply", "value": {"$": "state.answer"}}
+    ]}
+  }
+}
