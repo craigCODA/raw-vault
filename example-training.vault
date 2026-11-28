@@ -1,0 +1,95 @@
+{
+  "teacher": [
+    {
+      "summary": "A synthetic blue-lid rain gauge has a collection funnel. Its calibration divides a reading by two, preserving exact fractions.",
+      "keys": ["blue-lid rain gauge funnel", "blue-lid rain gauge"],
+      "links": [
+        {"relation": "commonsense:part_of", "left": "blue-lid rain gauge funnel", "right": "blue-lid rain gauge"}
+      ],
+      "operation": {
+        "name": "blue-lid-gauge-calibration",
+        "title": "Blue-lid rain gauge calibration",
+        "anchors": ["blue-lid rain gauge", "water"],
+        "module": "vault_execution",
+        "operator": "parameterized_transitions",
+        "parameters": {
+          "expression": "reading / 2", "target": "calibrated",
+          "activation": {
+            "phrases": ["blue-lid rain gauge {reading:number}"],
+            "input": {"state": {"reading": {"$": "match.reading"}}},
+            "reply": {"$": "result.value"}
+          }
+        }
+      },
+      "examples": [
+        {"kind": "positive", "check": "link", "input": {"relation": "commonsense:part_of", "left": "blue-lid rain gauge funnel", "right": "blue-lid rain gauge"}, "expect": true},
+        {"kind": "counterexample", "check": "link", "input": {"relation": "commonsense:part_of", "left": "blue-lid rain gauge", "right": "blue-lid rain gauge funnel"}, "expect": false},
+        {"kind": "positive", "check": "operation", "input": {"state": {"reading": 6}}, "expect": {"value": 3}},
+        {"kind": "counterexample", "check": "operation", "input": {"state": {"reading": 3}}, "expect": {"value": "3/2"}},
+        {"kind": "positive", "check": "turn", "input": {"text": "blue-lid rain gauge 3"}, "expect": {"reply": "3/2"}},
+        {"kind": "counterexample", "check": "turn", "input": {"text": "blue-lid rain gauge unknown"}, "expect": {"uses_learned": false}}
+      ]
+    },
+    {
+      "summary": "The funnel belongs to the synthetic blue-lid rain gauge. A zero trial verifies that calibration adds no offset.",
+      "keys": ["blue-lid rain gauge", "blue-lid rain gauge funnel"],
+      "links": [
+        {"relation": "commonsense:part_of", "left": "blue-lid rain gauge funnel", "right": "blue-lid rain gauge"}
+      ],
+      "operation": {
+        "name": "blue-lid-gauge-calibration",
+        "title": "Blue-lid rain gauge calibration",
+        "anchors": ["water", "blue-lid rain gauge"],
+        "module": "vault_execution",
+        "operator": "parameterized_transitions",
+        "parameters": {
+          "expression": "reading/2", "target": "calibrated",
+          "activation": {
+            "phrases": ["blue-lid rain gauge {reading:number}"],
+            "input": {"state": {"reading": {"$": "match.reading"}}},
+            "reply": {"$": "result.value"}
+          }
+        }
+      },
+      "examples": [
+        {"kind": "positive", "check": "link", "input": {"relation": "commonsense:part_of", "left": "blue-lid rain gauge funnel", "right": "blue-lid rain gauge"}, "expect": true},
+        {"kind": "counterexample", "check": "link", "input": {"relation": "commonsense:part_of", "left": "blue-lid rain gauge", "right": "blue-lid rain gauge funnel"}, "expect": false},
+        {"kind": "positive", "check": "operation", "input": {"state": {"reading": 6}}, "expect": {"value": 3}},
+        {"kind": "counterexample", "check": "operation", "input": {"state": {"reading": 0}}, "expect": {"value": 0}},
+        {"kind": "positive", "check": "turn", "input": {"text": "blue-lid rain gauge 3"}, "expect": {"reply": "3/2"}},
+        {"kind": "counterexample", "check": "turn", "input": {"text": "blue-lid rain gauge unknown"}, "expect": {"uses_learned": false}}
+      ]
+    },
+    {
+      "summary": "Record half the absolute magnitude of a signed deviation.",
+      "keys": [],
+      "links": [],
+      "operation": {
+        "name": "absolute-half-deviation",
+        "title": "Half the absolute deviation",
+        "anchors": ["state"],
+        "module": "vault_execution",
+        "operator": "parameterized_transitions",
+        "parameters": {"expression": "deviation / 2", "target": "magnitude"}
+      },
+      "examples": [
+        {"kind": "positive", "check": "operation", "input": {"state": {"deviation": 4}}, "expect": {"value": 2}},
+        {"kind": "counterexample", "check": "operation", "input": {"state": {"deviation": 0}}, "expect": {"value": 0}}
+      ]
+    }
+  ],
+  "critic": [
+    {
+      "summary": "Check an exact fractional reading below one and inspect the new state field.",
+      "counterexamples": [
+        {"kind": "counterexample", "check": "operation", "input": {"state": {"reading": "1/2"}}, "expect": {"value": "1/4", "state": {"calibrated": "1/4"}}}
+      ]
+    },
+    {
+      "summary": "Absolute magnitude is positive for a negative nonzero deviation.",
+      "counterexamples": [
+        {"kind": "counterexample", "check": "operation", "input": {"state": {"deviation": -6}}, "expect": {"value": 3}}
+      ]
+    }
+  ]
+}

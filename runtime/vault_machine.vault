@@ -1,0 +1,38 @@
+{
+  "format": "vault-body-graph/1",
+  "module": "vault_machine",
+  "exports": [],
+  "bodies": {
+    "resolve_body": {
+      "parameters": ["catalog", "module", "operator"],
+      "entry": ["s001"],
+      "nodes": {
+        "s001": {"op": "Return", "value": {"op": "Subscript", "value": {"op": "Subscript", "value": {"name": "catalog"}, "slice": {"name": "module"}}, "slice": {"name": "operator"}}}
+      }
+    },
+    "bind_call": {
+      "parameters": ["arguments", "parameters", "context"],
+      "entry": ["s001"],
+      "nodes": {
+        "s001": {"op": "Return", "value": {"op": "List", "elts": [{"name": "arguments"}, {"name": "parameters"}, {"name": "context"}]}}
+      }
+    },
+    "complete_call": {
+      "parameters": ["result"],
+      "entry": ["s001"],
+      "nodes": {
+        "s001": {"op": "Return", "value": {"name": "result"}}
+      }
+    },
+    "dispatch": {
+      "parameters": ["catalog", "module", "operator", "arguments", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s004"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "address"}], "value": {"op": "Call", "func": {"body": "body/vault_machine/resolve_body"}, "args": [{"name": "catalog"}, {"name": "module"}, {"name": "operator"}]}},
+        "s002": {"op": "Assign", "targets": [{"store": "frame"}], "value": {"op": "Call", "func": {"body": "body/vault_machine/bind_call"}, "args": [{"name": "arguments"}, {"name": "parameters"}, {"name": "context"}]}},
+        "s003": {"op": "Assign", "targets": [{"store": "result"}], "value": {"op": "Call", "func": {"name": "invoke_body"}, "args": [{"name": "address"}, {"op": "Starred", "value": {"name": "frame"}}]}},
+        "s004": {"op": "Return", "value": {"op": "Call", "func": {"body": "body/vault_machine/complete_call"}, "args": [{"name": "result"}]}}
+      }
+    }
+  }
+}

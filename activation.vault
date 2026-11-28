@@ -1,0 +1,46 @@
+{
+  "format": "vault-activation/1",
+  "activation": {"max_terms": 24, "phrase_width": 3, "max_links": 12, "memo_entries": 32},
+  "fallback": "I need a matching operation or a more specific request.",
+  "routes": [
+    {
+      "id": "remember",
+      "pattern": "remember (?:that )?(?P<subject>.+?) is (?P<value>.+)",
+      "program": {"operation": 33, "input": {
+        "save": {"$": "save"},
+        "encounters": [{"symbol": {"$": "keys.subject"}, "meaning": {"$": "match.value"}}],
+        "query": {"$": "keys.subject"}
+      }},
+      "write": {"save": {"$": "result.save"}, "subject": {"$": "keys.subject"}},
+      "reply": {"$": "result.meaning"}
+    },
+    {
+      "id": "recall",
+      "pattern": "(?:what is|tell me|recall) (?P<subject>.+)",
+      "program": {"operation": 33, "input": {
+        "save": {"$": "save"}, "encounters": [], "query": {"$": "keys.subject"}
+      }},
+      "write": {"subject": {"$": "keys.subject"}},
+      "reply": {"$": "result.meaning"},
+      "missing": "I need a stored value for that subject."
+    },
+    {
+      "id": "previous-subject",
+      "pattern": "what did i say it was",
+      "when": {"path": "state.subject", "op": "ne", "value": null},
+      "program": {"operation": 33, "input": {
+        "save": {"$": "save"}, "encounters": [], "query": {"$": "state.subject"}
+      }},
+      "reply": {"$": "result.meaning"}
+    },
+    {
+      "id": "calculate",
+      "pattern": "(?:calculate|compute) (?P<expression>[0-9+*/(). -]+)",
+      "program": {"operation": 56, "input": {
+        "expression": {"$": "match.expression"}, "operands": {}
+      }},
+      "reply": {"$": "result.value"},
+      "memoize": true
+    }
+  ]
+}

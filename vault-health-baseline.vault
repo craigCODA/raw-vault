@@ -1,0 +1,4664 @@
+{
+  "environment": {
+    "implementation": "CPython",
+    "machine": "AMD64",
+    "python": "3.12.10",
+    "sqlite": "3.49.1",
+    "system": "Windows"
+  },
+  "format": "vault-health/1",
+  "probes": {
+    "all-reasoning-chain": {
+      "command": [
+        "reasoning_links.py",
+        "chain",
+        "--family",
+        "all",
+        "--links",
+        "2",
+        "--limit",
+        "2"
+      ],
+      "elapsed_ns": 636188800,
+      "output": {
+        "chains": [
+          {
+            "link": "[[\\u0000]] {argument:answers} [[\\u0000]] {argument:answers} [[\\u0000]]",
+            "position": "0",
+            "relations": [
+              "argument:answers",
+              "argument:answers"
+            ],
+            "statements": [
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ]
+            ]
+          },
+          {
+            "link": "[[\\u0000]] {argument:answers} [[\\u0000]] {argument:answers} [[\\u0001]]",
+            "position": "1",
+            "relations": [
+              "argument:answers",
+              "argument:answers"
+            ],
+            "statements": [
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0001"
+              ]
+            ]
+          }
+        ],
+        "combinations": "13229014051984155066873",
+        "link_count": 2,
+        "relation_types": 33,
+        "statement_width": 1,
+        "vocabulary_keys": 2298793
+      },
+      "peak_python_bytes": 1330510
+    },
+    "commonsense-chain": {
+      "command": [
+        "reasoning_links.py",
+        "chain",
+        "--family",
+        "commonsense",
+        "--links",
+        "3",
+        "--limit",
+        "2"
+      ],
+      "elapsed_ns": 674703300,
+      "output": {
+        "chains": [
+          {
+            "link": "[[\\u0000]] {commonsense:before} [[\\u0000]] {commonsense:before} [[\\u0000]] {commonsense:before} [[\\u0000]]",
+            "position": "0",
+            "relations": [
+              "commonsense:before",
+              "commonsense:before",
+              "commonsense:before"
+            ],
+            "statements": [
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ]
+            ]
+          },
+          {
+            "link": "[[\\u0000]] {commonsense:before} [[\\u0000]] {commonsense:before} [[\\u0000]] {commonsense:before} [[\\u0001]]",
+            "position": "1",
+            "relations": [
+              "commonsense:before",
+              "commonsense:before",
+              "commonsense:before"
+            ],
+            "statements": [
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0001"
+              ]
+            ]
+          }
+        ],
+        "combinations": "76627308433893586336633749944",
+        "link_count": 3,
+        "relation_types": 14,
+        "statement_width": 1,
+        "vocabulary_keys": 2298793
+      },
+      "peak_python_bytes": 1330408
+    },
+    "example-address": {
+      "command": [
+        "vault_operations.py",
+        "run",
+        "example-address.vault"
+      ],
+      "elapsed_ns": 668202600,
+      "output": {
+        "address": {
+          "links": 1,
+          "position": "119517139977775",
+          "width": 1
+        },
+        "status": "completed",
+        "steps": [
+          {
+            "left": [
+              "2"
+            ],
+            "operation": 59,
+            "relation": {
+              "name": "logic:and",
+              "roles": [
+                "first proposition",
+                "second proposition"
+              ]
+            },
+            "result": {
+              "state": {
+                "x": 5
+              },
+              "value": 5
+            },
+            "right": [
+              "3"
+            ]
+          }
+        ]
+      },
+      "peak_python_bytes": 1736516
+    },
+    "example-argument": {
+      "command": [
+        "reasoning_links.py",
+        "prove",
+        "example-argument.vault"
+      ],
+      "elapsed_ns": 213183700,
+      "output": {
+        "c": "[[slippery]]",
+        "reached_c": true,
+        "steps": [
+          {
+            "conclusion": [
+              "logic:implies",
+              "[[rain]]",
+              "[[slippery]]"
+            ],
+            "from": [
+              0,
+              1
+            ],
+            "index": 3,
+            "rule": "hypothetical_syllogism"
+          },
+          {
+            "conclusion": "[[slippery]]",
+            "from": [
+              3,
+              2
+            ],
+            "index": 4,
+            "rule": "modus_ponens"
+          }
+        ]
+      },
+      "peak_python_bytes": 1330343
+    },
+    "example-commonsense": {
+      "command": [
+        "commonsense.py",
+        "example-commonsense.vault"
+      ],
+      "elapsed_ns": 233621500,
+      "output": {
+        "blocked": [
+          {
+            "by": [
+              "covered",
+              "[[bridge]]"
+            ],
+            "checks": [],
+            "fact": [
+              "wet",
+              "[[bridge]]"
+            ],
+            "premises": [
+              [
+                "raining_at",
+                "[[park]]"
+              ],
+              [
+                "located_at",
+                "[[bridge]]",
+                "[[park]]"
+              ],
+              [
+                "outdoor_surface",
+                "[[bridge]]"
+              ]
+            ],
+            "relation": "commonsense:usually_causes",
+            "rule": "rain_wets_outdoor_surfaces"
+          }
+        ],
+        "c": [
+          "slippery",
+          "[[path]]"
+        ],
+        "expected": [
+          {
+            "checks": [],
+            "fact": [
+              "wet",
+              "[[path]]"
+            ],
+            "premises": [
+              [
+                "raining_at",
+                "[[park]]"
+              ],
+              [
+                "located_at",
+                "[[path]]",
+                "[[park]]"
+              ],
+              [
+                "outdoor_surface",
+                "[[path]]"
+              ]
+            ],
+            "relation": "commonsense:usually_causes",
+            "rule": "rain_wets_outdoor_surfaces"
+          },
+          {
+            "checks": [],
+            "fact": [
+              "slippery",
+              "[[path]]"
+            ],
+            "premises": [
+              [
+                "wet",
+                "[[path]]"
+              ],
+              [
+                "walking_surface",
+                "[[path]]"
+              ]
+            ],
+            "relation": "commonsense:usually_causes",
+            "rule": "wet_walking_surface_may_be_slippery"
+          }
+        ],
+        "status": "expected"
+      },
+      "peak_python_bytes": 1560673
+    },
+    "example-execution": {
+      "artifact": "{\n  \"status\": \"reached\",\n  \"cursor\": null,\n  \"state\": {\n    \"save\": {\n      \"symbols\": {\n        \"my name\": \"Craig\"\n      }\n    },\n    \"intent\": {\n      \"intent\": \"answer\",\n      \"goal\": \"my name\",\n      \"fields\": [\n        \"value\"\n      ]\n    },\n    \"answer\": \"Craig\",\n    \"reply\": \"Craig\"\n  },\n  \"steps\": [\n    {\n      \"address\": \"interpret\",\n      \"operation\": 12,\n      \"input\": {\n        \"utterance\": \"What is my name?\"\n      },\n      \"result\": {\n        \"intent\": \"answer\",\n        \"goal\": \"my name\",\n        \"fields\": [\n          \"value\"\n        ]\n      },\n      \"writes\": {\n        \"intent\": {\n          \"intent\": \"answer\",\n          \"goal\": \"my name\",\n          \"fields\": [\n            \"value\"\n          ]\n        }\n      },\n      \"next\": \"recall\"\n    },\n    {\n      \"address\": \"recall\",\n      \"operation\": 33,\n      \"input\": {\n        \"save\": {\n          \"symbols\": {\n            \"my name\": \"Craig\"\n          }\n        },\n        \"encounters\": [],\n        \"query\": \"my name\"\n      },\n      \"result\": {\n        \"save\": {\n          \"symbols\": {\n            \"my name\": \"Craig\"\n          }\n        },\n        \"meaning\": \"Craig\"\n      },\n      \"writes\": {\n        \"answer\": \"Craig\"\n      },\n      \"next\": \"reply\"\n    },\n    {\n      \"address\": \"reply\",\n      \"operation\": 20,\n      \"input\": {\n        \"format\": \"answer\",\n        \"conclusion\": \"Craig\"\n      },\n      \"result\": {\n        \"format\": \"answer\",\n        \"missing\": [],\n        \"text\": \"Craig\"\n      },\n      \"writes\": {\n        \"reply\": \"Craig\"\n      },\n      \"next\": null\n    }\n  ]\n}",
+      "command": [
+        "vault_operations.py",
+        "run",
+        "example-execution.vault",
+        "--save",
+        "@artifact"
+      ],
+      "elapsed_ns": 258763600,
+      "output": {
+        "cursor": null,
+        "state": {
+          "answer": "Craig",
+          "intent": {
+            "fields": [
+              "value"
+            ],
+            "goal": "my name",
+            "intent": "answer"
+          },
+          "reply": "Craig",
+          "save": {
+            "symbols": {
+              "my name": "Craig"
+            }
+          }
+        },
+        "status": "reached",
+        "steps": [
+          {
+            "address": "interpret",
+            "input": {
+              "utterance": "What is my name?"
+            },
+            "next": "recall",
+            "operation": 12,
+            "result": {
+              "fields": [
+                "value"
+              ],
+              "goal": "my name",
+              "intent": "answer"
+            },
+            "writes": {
+              "intent": {
+                "fields": [
+                  "value"
+                ],
+                "goal": "my name",
+                "intent": "answer"
+              }
+            }
+          },
+          {
+            "address": "recall",
+            "input": {
+              "encounters": [],
+              "query": "my name",
+              "save": {
+                "symbols": {
+                  "my name": "Craig"
+                }
+              }
+            },
+            "next": "reply",
+            "operation": 33,
+            "result": {
+              "meaning": "Craig",
+              "save": {
+                "symbols": {
+                  "my name": "Craig"
+                }
+              }
+            },
+            "writes": {
+              "answer": "Craig"
+            }
+          },
+          {
+            "address": "reply",
+            "input": {
+              "conclusion": "Craig",
+              "format": "answer"
+            },
+            "next": null,
+            "operation": 20,
+            "result": {
+              "format": "answer",
+              "missing": [],
+              "text": "Craig"
+            },
+            "writes": {
+              "reply": "Craig"
+            }
+          }
+        ]
+      },
+      "peak_python_bytes": 2314041
+    },
+    "identity": {
+      "command": [
+        "vault_identity.py"
+      ],
+      "elapsed_ns": 3100552600,
+      "output": {
+        "facts": {
+          "addressable_keys": 2298793,
+          "compiled_operations": 80,
+          "continuation_links": 2376696,
+          "data_records": 2725733,
+          "decimal_values": 21893996,
+          "float32_values": 28259545,
+          "operation_anchors": 185,
+          "operation_cases": 126,
+          "ordered_one_key_pairs": 5284449256849,
+          "ordered_one_link_chains": 174386825476017,
+          "ordered_one_operation_links": 13950946038081360,
+          "ordered_three_link_chains": 1003555241686892788695192081537,
+          "reasoning_cue_links": 30471,
+          "relation_types": 33,
+          "scalar_values": 52506774,
+          "text_links": 5487036,
+          "uint16_values": 2353233,
+          "vocabulary_entries": 2578195
+        },
+        "identity": "2c20d39dce205f5b64eef1230734af11cadd72f35bb9303d04075e7cefd490bf"
+      },
+      "peak_python_bytes": 1265064
+    },
+    "operation-address": {
+      "command": [
+        "vault_operations.py",
+        "address",
+        "--links",
+        "2",
+        "--width",
+        "1",
+        "--limit",
+        "2"
+      ],
+      "elapsed_ns": 659139100,
+      "output": {
+        "combinations": "84665689932698592427987200",
+        "keys": 2298793,
+        "links": 2,
+        "operations": 80,
+        "page": [
+          {
+            "address": {
+              "links": 2,
+              "position": "0",
+              "width": 1
+            },
+            "hops": [
+              {
+                "left": [
+                  "\u0000"
+                ],
+                "operation": 1,
+                "relation": {
+                  "name": "argument:answers",
+                  "roles": [
+                    "answer",
+                    "question"
+                  ]
+                },
+                "right": [
+                  "\u0000"
+                ]
+              },
+              {
+                "left": [
+                  "\u0000"
+                ],
+                "operation": 1,
+                "relation": {
+                  "name": "argument:answers",
+                  "roles": [
+                    "answer",
+                    "question"
+                  ]
+                },
+                "right": [
+                  "\u0000"
+                ]
+              }
+            ],
+            "link": "[[\\u0000]] {argument:answers} {operation:1} [[\\u0000]] {argument:answers} {operation:1} [[\\u0000]]",
+            "position": "0"
+          },
+          {
+            "address": {
+              "links": 2,
+              "position": "1",
+              "width": 1
+            },
+            "hops": [
+              {
+                "left": [
+                  "\u0000"
+                ],
+                "operation": 1,
+                "relation": {
+                  "name": "argument:answers",
+                  "roles": [
+                    "answer",
+                    "question"
+                  ]
+                },
+                "right": [
+                  "\u0000"
+                ]
+              },
+              {
+                "left": [
+                  "\u0000"
+                ],
+                "operation": 1,
+                "relation": {
+                  "name": "argument:answers",
+                  "roles": [
+                    "answer",
+                    "question"
+                  ]
+                },
+                "right": [
+                  "\u0001"
+                ]
+              }
+            ],
+            "link": "[[\\u0000]] {argument:answers} {operation:1} [[\\u0000]] {argument:answers} {operation:1} [[\\u0001]]",
+            "position": "1"
+          }
+        ],
+        "relations": 33,
+        "width": 1
+      },
+      "peak_python_bytes": 1736526
+    },
+    "operation-build": {
+      "command": [
+        "vault_operations.py",
+        "--database",
+        "@database",
+        "build"
+      ],
+      "elapsed_ns": 657779200,
+      "output": {
+        "anchors": 185,
+        "operations": 80,
+        "passed": 126
+      },
+      "peak_python_bytes": 2678345
+    },
+    "operation-check": {
+      "command": [
+        "vault_operations.py",
+        "check"
+      ],
+      "elapsed_ns": 427432200,
+      "output": {
+        "cases": [
+          {
+            "case": "river",
+            "operation": 1,
+            "passed": true
+          },
+          {
+            "case": "financial",
+            "operation": 1,
+            "passed": true
+          },
+          {
+            "case": "pronoun",
+            "operation": 2,
+            "passed": true
+          },
+          {
+            "case": "description",
+            "operation": 2,
+            "passed": true
+          },
+          {
+            "case": "speaker-place-and-date",
+            "operation": 3,
+            "passed": true
+          },
+          {
+            "case": "transfer",
+            "operation": 4,
+            "passed": true
+          },
+          {
+            "case": "instrument",
+            "operation": 4,
+            "passed": true
+          },
+          {
+            "case": "active",
+            "operation": 5,
+            "passed": true
+          },
+          {
+            "case": "passive",
+            "operation": 5,
+            "passed": true
+          },
+          {
+            "case": "new-purpose-compound",
+            "operation": 6,
+            "passed": true
+          },
+          {
+            "case": "new-material-compound",
+            "operation": 6,
+            "passed": true
+          },
+          {
+            "case": "social",
+            "operation": 7,
+            "passed": true
+          },
+          {
+            "case": "physical",
+            "operation": 7,
+            "passed": true
+          },
+          {
+            "case": "embedded-denial",
+            "operation": 8,
+            "passed": true
+          },
+          {
+            "case": "stop-question",
+            "operation": 9,
+            "passed": true
+          },
+          {
+            "case": "spanish",
+            "operation": 10,
+            "passed": true
+          },
+          {
+            "case": "french",
+            "operation": 10,
+            "passed": true
+          },
+          {
+            "case": "promise",
+            "operation": 11,
+            "passed": true
+          },
+          {
+            "case": "correction",
+            "operation": 11,
+            "passed": true
+          },
+          {
+            "case": "explain",
+            "operation": 12,
+            "passed": true
+          },
+          {
+            "case": "decide",
+            "operation": 12,
+            "passed": true
+          },
+          {
+            "case": "single-name",
+            "operation": 13,
+            "passed": true
+          },
+          {
+            "case": "date-list",
+            "operation": 13,
+            "passed": true
+          },
+          {
+            "case": "unresolved-address",
+            "operation": 14,
+            "passed": true
+          },
+          {
+            "case": "outcome-changing-field",
+            "operation": 15,
+            "passed": true
+          },
+          {
+            "case": "same-outcome",
+            "operation": 15,
+            "passed": true
+          },
+          {
+            "case": "shared-room",
+            "operation": 16,
+            "passed": true
+          },
+          {
+            "case": "temperature-report",
+            "operation": 16,
+            "passed": true
+          },
+          {
+            "case": "completed-commitment",
+            "operation": 17,
+            "passed": true
+          },
+          {
+            "case": "offer-declined",
+            "operation": 17,
+            "passed": true
+          },
+          {
+            "case": "update-one-scope",
+            "operation": 18,
+            "passed": true
+          },
+          {
+            "case": "return-to-first-branch",
+            "operation": 19,
+            "passed": true
+          },
+          {
+            "case": "example",
+            "operation": 20,
+            "passed": true
+          },
+          {
+            "case": "proof",
+            "operation": 20,
+            "passed": true
+          },
+          {
+            "case": "before start",
+            "operation": 21,
+            "passed": true
+          },
+          {
+            "case": "during closed interval",
+            "operation": 21,
+            "passed": true
+          },
+          {
+            "case": "after end",
+            "operation": 21,
+            "passed": true
+          },
+          {
+            "case": "fractional interval",
+            "operation": 22,
+            "passed": true
+          },
+          {
+            "case": "single instant",
+            "operation": 22,
+            "passed": true
+          },
+          {
+            "case": "events through cutoff",
+            "operation": 23,
+            "passed": true
+          },
+          {
+            "case": "future change pending",
+            "operation": 23,
+            "passed": true
+          },
+          {
+            "case": "nested containers",
+            "operation": 24,
+            "passed": true
+          },
+          {
+            "case": "cycle and duplicate edge",
+            "operation": 24,
+            "passed": true
+          },
+          {
+            "case": "absent and unsuitable parts",
+            "operation": 25,
+            "passed": true
+          },
+          {
+            "case": "working assembly",
+            "operation": 25,
+            "passed": true
+          },
+          {
+            "case": "rotate about translated origin",
+            "operation": 26,
+            "passed": true
+          },
+          {
+            "case": "clockwise fractional coordinate",
+            "operation": 26,
+            "passed": true
+          },
+          {
+            "case": "exact conversion and fit",
+            "operation": 27,
+            "passed": true
+          },
+          {
+            "case": "insufficient capacity",
+            "operation": 27,
+            "passed": true
+          },
+          {
+            "case": "dimensions differ",
+            "operation": 27,
+            "passed": true
+          },
+          {
+            "case": "locked and out of reach",
+            "operation": 28,
+            "passed": true
+          },
+          {
+            "case": "meets both requirements",
+            "operation": 28,
+            "passed": true
+          },
+          {
+            "case": "take and move an item",
+            "operation": 29,
+            "passed": true
+          },
+          {
+            "case": "blocked open changes nothing",
+            "operation": 29,
+            "passed": true
+          },
+          {
+            "case": "filter actions by current state",
+            "operation": 30,
+            "passed": true
+          },
+          {
+            "case": "reject a request without charging any resource",
+            "operation": 31,
+            "passed": true
+          },
+          {
+            "case": "unknown resource has zero budget",
+            "operation": 31,
+            "passed": true
+          },
+          {
+            "case": "end early at declared goal",
+            "operation": 32,
+            "passed": true
+          },
+          {
+            "case": "allowance exhausted before goal",
+            "operation": 32,
+            "passed": true
+          },
+          {
+            "case": "bind-new-symbol",
+            "operation": 33,
+            "passed": true
+          },
+          {
+            "case": "source-disagreement",
+            "operation": 34,
+            "passed": true
+          },
+          {
+            "case": "preserve-competing-accounts",
+            "operation": 35,
+            "passed": true
+          },
+          {
+            "case": "rumor-only",
+            "operation": 36,
+            "passed": true
+          },
+          {
+            "case": "revisit-with-posted-hours",
+            "operation": 36,
+            "passed": true
+          },
+          {
+            "case": "participant-relative-access",
+            "operation": 37,
+            "passed": true
+          },
+          {
+            "case": "nested-lee-in-mira",
+            "operation": 38,
+            "passed": true
+          },
+          {
+            "case": "actual-lee-perspective",
+            "operation": 38,
+            "passed": true
+          },
+          {
+            "case": "different-optima",
+            "operation": 39,
+            "passed": true
+          },
+          {
+            "case": "default-borrowing",
+            "operation": 40,
+            "passed": true
+          },
+          {
+            "case": "established-permission",
+            "operation": 40,
+            "passed": true
+          },
+          {
+            "case": "transitive-commute-facts",
+            "operation": 41,
+            "passed": true
+          },
+          {
+            "case": "outfit-facts",
+            "operation": 41,
+            "passed": true
+          },
+          {
+            "case": "chained-counterfactual",
+            "operation": 42,
+            "passed": true
+          },
+          {
+            "case": "closed-door",
+            "operation": 42,
+            "passed": true
+          },
+          {
+            "case": "only one witness",
+            "operation": 43,
+            "passed": true
+          },
+          {
+            "case": "empty collection",
+            "operation": 43,
+            "passed": true
+          },
+          {
+            "case": "instantiate inverse relation",
+            "operation": 44,
+            "passed": true
+          },
+          {
+            "case": "repeated variable mismatch",
+            "operation": 44,
+            "passed": true
+          },
+          {
+            "case": "nested premises hold",
+            "operation": 45,
+            "passed": true
+          },
+          {
+            "case": "negated condition fails",
+            "operation": 45,
+            "passed": true
+          },
+          {
+            "case": "solve with variable coefficient",
+            "operation": 46,
+            "passed": true
+          },
+          {
+            "case": "solve with target in denominator",
+            "operation": 46,
+            "passed": true
+          },
+          {
+            "case": "combined constraints leave one solution",
+            "operation": 47,
+            "passed": true
+          },
+          {
+            "case": "several satisfying assignments",
+            "operation": 47,
+            "passed": true
+          },
+          {
+            "case": "find violating witness",
+            "operation": 48,
+            "passed": true
+          },
+          {
+            "case": "no witness on supplied domain",
+            "operation": 48,
+            "passed": true
+          },
+          {
+            "case": "two compatible causes",
+            "operation": 49,
+            "passed": true
+          },
+          {
+            "case": "unknown effect remains unresolved",
+            "operation": 49,
+            "passed": true
+          },
+          {
+            "case": "only power separates competing predictions",
+            "operation": 50,
+            "passed": true
+          },
+          {
+            "case": "existing observation leaves one candidate",
+            "operation": 50,
+            "passed": true
+          },
+          {
+            "case": "remove enabling fact",
+            "operation": 51,
+            "passed": true
+          },
+          {
+            "case": "change an unrelated fact",
+            "operation": 51,
+            "passed": true
+          },
+          {
+            "case": "supports the declared claim",
+            "operation": 52,
+            "passed": true
+          },
+          {
+            "case": "available evidence supports another claim",
+            "operation": 52,
+            "passed": true
+          },
+          {
+            "case": "new evidence bridges retracted support",
+            "operation": 53,
+            "passed": true
+          },
+          {
+            "case": "repair still lacks a necessary premise",
+            "operation": 53,
+            "passed": true
+          },
+          {
+            "case": "preserve roles under structural mapping",
+            "operation": 54,
+            "passed": true
+          },
+          {
+            "case": "map requires each source role",
+            "operation": 54,
+            "passed": true
+          },
+          {
+            "case": "event reaches goal",
+            "operation": 55,
+            "passed": true
+          },
+          {
+            "case": "waiting for event leaves resume address",
+            "operation": 55,
+            "passed": true
+          },
+          {
+            "case": "read exactly the required operands",
+            "operation": 56,
+            "passed": true
+          },
+          {
+            "case": "check combined conditions",
+            "operation": 57,
+            "passed": true
+          },
+          {
+            "case": "select an already-stored successor",
+            "operation": 58,
+            "passed": true
+          },
+          {
+            "case": "apply the same expression to a supplied binding",
+            "operation": 59,
+            "passed": true
+          },
+          {
+            "case": "second effect observes the first write",
+            "operation": 60,
+            "passed": true
+          },
+          {
+            "case": "effects see the same starting state",
+            "operation": 61,
+            "passed": true
+          },
+          {
+            "case": "incompatible writes keep the current value",
+            "operation": 61,
+            "passed": true
+          },
+          {
+            "case": "pass a computed state into another step",
+            "operation": 62,
+            "passed": true
+          },
+          {
+            "case": "record the inputs and output of a real execution",
+            "operation": 63,
+            "passed": true
+          },
+          {
+            "case": "find a route despite a reachable cycle",
+            "operation": 64,
+            "passed": true
+          },
+          {
+            "case": "resume at the second instruction",
+            "operation": 65,
+            "passed": true
+          },
+          {
+            "case": "apply changes and remove a fact",
+            "operation": 66,
+            "passed": true
+          },
+          {
+            "case": "branch independently from x at five",
+            "operation": 67,
+            "passed": true
+          },
+          {
+            "case": "merge cycles while distinguishing a later output",
+            "operation": 68,
+            "passed": true
+          },
+          {
+            "case": "expire an old turn and an unrelated situation",
+            "operation": 69,
+            "passed": true
+          },
+          {
+            "case": "look up live operations and a missing capability",
+            "operation": 70,
+            "passed": true
+          },
+          {
+            "case": "verify the same core across changing saves",
+            "operation": 71,
+            "passed": true
+          },
+          {
+            "case": "share the route for two open events",
+            "operation": 72,
+            "passed": true
+          },
+          {
+            "case": "reduce simulated block reads with grouped UTF-8 payloads",
+            "operation": 73,
+            "passed": true
+          },
+          {
+            "case": "a timer dispatches its configured increment",
+            "operation": 74,
+            "passed": true
+          },
+          {
+            "case": "same question resolves to two remembered names",
+            "operation": 75,
+            "passed": true
+          },
+          {
+            "case": "carry the zorb binding into a separate lookup",
+            "operation": 76,
+            "passed": true
+          },
+          {
+            "case": "a cover blocks the premise needed for slippery",
+            "operation": 77,
+            "passed": true
+          },
+          {
+            "case": "participants answer differently about the key",
+            "operation": 78,
+            "passed": true
+          },
+          {
+            "case": "same input reproduces execution after JSON reload",
+            "operation": 79,
+            "passed": true
+          },
+          {
+            "case": "measure a real increment with declared parameters",
+            "operation": 80,
+            "passed": true
+          }
+        ],
+        "operations": 80,
+        "passed": 126
+      },
+      "peak_python_bytes": 2375635
+    },
+    "operation-check-rebuilt": {
+      "command": [
+        "vault_operations.py",
+        "--database",
+        "@database",
+        "check"
+      ],
+      "elapsed_ns": 499574200,
+      "output": {
+        "cases": [
+          {
+            "case": "river",
+            "operation": 1,
+            "passed": true
+          },
+          {
+            "case": "financial",
+            "operation": 1,
+            "passed": true
+          },
+          {
+            "case": "pronoun",
+            "operation": 2,
+            "passed": true
+          },
+          {
+            "case": "description",
+            "operation": 2,
+            "passed": true
+          },
+          {
+            "case": "speaker-place-and-date",
+            "operation": 3,
+            "passed": true
+          },
+          {
+            "case": "transfer",
+            "operation": 4,
+            "passed": true
+          },
+          {
+            "case": "instrument",
+            "operation": 4,
+            "passed": true
+          },
+          {
+            "case": "active",
+            "operation": 5,
+            "passed": true
+          },
+          {
+            "case": "passive",
+            "operation": 5,
+            "passed": true
+          },
+          {
+            "case": "new-purpose-compound",
+            "operation": 6,
+            "passed": true
+          },
+          {
+            "case": "new-material-compound",
+            "operation": 6,
+            "passed": true
+          },
+          {
+            "case": "social",
+            "operation": 7,
+            "passed": true
+          },
+          {
+            "case": "physical",
+            "operation": 7,
+            "passed": true
+          },
+          {
+            "case": "embedded-denial",
+            "operation": 8,
+            "passed": true
+          },
+          {
+            "case": "stop-question",
+            "operation": 9,
+            "passed": true
+          },
+          {
+            "case": "spanish",
+            "operation": 10,
+            "passed": true
+          },
+          {
+            "case": "french",
+            "operation": 10,
+            "passed": true
+          },
+          {
+            "case": "promise",
+            "operation": 11,
+            "passed": true
+          },
+          {
+            "case": "correction",
+            "operation": 11,
+            "passed": true
+          },
+          {
+            "case": "explain",
+            "operation": 12,
+            "passed": true
+          },
+          {
+            "case": "decide",
+            "operation": 12,
+            "passed": true
+          },
+          {
+            "case": "single-name",
+            "operation": 13,
+            "passed": true
+          },
+          {
+            "case": "date-list",
+            "operation": 13,
+            "passed": true
+          },
+          {
+            "case": "unresolved-address",
+            "operation": 14,
+            "passed": true
+          },
+          {
+            "case": "outcome-changing-field",
+            "operation": 15,
+            "passed": true
+          },
+          {
+            "case": "same-outcome",
+            "operation": 15,
+            "passed": true
+          },
+          {
+            "case": "shared-room",
+            "operation": 16,
+            "passed": true
+          },
+          {
+            "case": "temperature-report",
+            "operation": 16,
+            "passed": true
+          },
+          {
+            "case": "completed-commitment",
+            "operation": 17,
+            "passed": true
+          },
+          {
+            "case": "offer-declined",
+            "operation": 17,
+            "passed": true
+          },
+          {
+            "case": "update-one-scope",
+            "operation": 18,
+            "passed": true
+          },
+          {
+            "case": "return-to-first-branch",
+            "operation": 19,
+            "passed": true
+          },
+          {
+            "case": "example",
+            "operation": 20,
+            "passed": true
+          },
+          {
+            "case": "proof",
+            "operation": 20,
+            "passed": true
+          },
+          {
+            "case": "before start",
+            "operation": 21,
+            "passed": true
+          },
+          {
+            "case": "during closed interval",
+            "operation": 21,
+            "passed": true
+          },
+          {
+            "case": "after end",
+            "operation": 21,
+            "passed": true
+          },
+          {
+            "case": "fractional interval",
+            "operation": 22,
+            "passed": true
+          },
+          {
+            "case": "single instant",
+            "operation": 22,
+            "passed": true
+          },
+          {
+            "case": "events through cutoff",
+            "operation": 23,
+            "passed": true
+          },
+          {
+            "case": "future change pending",
+            "operation": 23,
+            "passed": true
+          },
+          {
+            "case": "nested containers",
+            "operation": 24,
+            "passed": true
+          },
+          {
+            "case": "cycle and duplicate edge",
+            "operation": 24,
+            "passed": true
+          },
+          {
+            "case": "absent and unsuitable parts",
+            "operation": 25,
+            "passed": true
+          },
+          {
+            "case": "working assembly",
+            "operation": 25,
+            "passed": true
+          },
+          {
+            "case": "rotate about translated origin",
+            "operation": 26,
+            "passed": true
+          },
+          {
+            "case": "clockwise fractional coordinate",
+            "operation": 26,
+            "passed": true
+          },
+          {
+            "case": "exact conversion and fit",
+            "operation": 27,
+            "passed": true
+          },
+          {
+            "case": "insufficient capacity",
+            "operation": 27,
+            "passed": true
+          },
+          {
+            "case": "dimensions differ",
+            "operation": 27,
+            "passed": true
+          },
+          {
+            "case": "locked and out of reach",
+            "operation": 28,
+            "passed": true
+          },
+          {
+            "case": "meets both requirements",
+            "operation": 28,
+            "passed": true
+          },
+          {
+            "case": "take and move an item",
+            "operation": 29,
+            "passed": true
+          },
+          {
+            "case": "blocked open changes nothing",
+            "operation": 29,
+            "passed": true
+          },
+          {
+            "case": "filter actions by current state",
+            "operation": 30,
+            "passed": true
+          },
+          {
+            "case": "reject a request without charging any resource",
+            "operation": 31,
+            "passed": true
+          },
+          {
+            "case": "unknown resource has zero budget",
+            "operation": 31,
+            "passed": true
+          },
+          {
+            "case": "end early at declared goal",
+            "operation": 32,
+            "passed": true
+          },
+          {
+            "case": "allowance exhausted before goal",
+            "operation": 32,
+            "passed": true
+          },
+          {
+            "case": "bind-new-symbol",
+            "operation": 33,
+            "passed": true
+          },
+          {
+            "case": "source-disagreement",
+            "operation": 34,
+            "passed": true
+          },
+          {
+            "case": "preserve-competing-accounts",
+            "operation": 35,
+            "passed": true
+          },
+          {
+            "case": "rumor-only",
+            "operation": 36,
+            "passed": true
+          },
+          {
+            "case": "revisit-with-posted-hours",
+            "operation": 36,
+            "passed": true
+          },
+          {
+            "case": "participant-relative-access",
+            "operation": 37,
+            "passed": true
+          },
+          {
+            "case": "nested-lee-in-mira",
+            "operation": 38,
+            "passed": true
+          },
+          {
+            "case": "actual-lee-perspective",
+            "operation": 38,
+            "passed": true
+          },
+          {
+            "case": "different-optima",
+            "operation": 39,
+            "passed": true
+          },
+          {
+            "case": "default-borrowing",
+            "operation": 40,
+            "passed": true
+          },
+          {
+            "case": "established-permission",
+            "operation": 40,
+            "passed": true
+          },
+          {
+            "case": "transitive-commute-facts",
+            "operation": 41,
+            "passed": true
+          },
+          {
+            "case": "outfit-facts",
+            "operation": 41,
+            "passed": true
+          },
+          {
+            "case": "chained-counterfactual",
+            "operation": 42,
+            "passed": true
+          },
+          {
+            "case": "closed-door",
+            "operation": 42,
+            "passed": true
+          },
+          {
+            "case": "only one witness",
+            "operation": 43,
+            "passed": true
+          },
+          {
+            "case": "empty collection",
+            "operation": 43,
+            "passed": true
+          },
+          {
+            "case": "instantiate inverse relation",
+            "operation": 44,
+            "passed": true
+          },
+          {
+            "case": "repeated variable mismatch",
+            "operation": 44,
+            "passed": true
+          },
+          {
+            "case": "nested premises hold",
+            "operation": 45,
+            "passed": true
+          },
+          {
+            "case": "negated condition fails",
+            "operation": 45,
+            "passed": true
+          },
+          {
+            "case": "solve with variable coefficient",
+            "operation": 46,
+            "passed": true
+          },
+          {
+            "case": "solve with target in denominator",
+            "operation": 46,
+            "passed": true
+          },
+          {
+            "case": "combined constraints leave one solution",
+            "operation": 47,
+            "passed": true
+          },
+          {
+            "case": "several satisfying assignments",
+            "operation": 47,
+            "passed": true
+          },
+          {
+            "case": "find violating witness",
+            "operation": 48,
+            "passed": true
+          },
+          {
+            "case": "no witness on supplied domain",
+            "operation": 48,
+            "passed": true
+          },
+          {
+            "case": "two compatible causes",
+            "operation": 49,
+            "passed": true
+          },
+          {
+            "case": "unknown effect remains unresolved",
+            "operation": 49,
+            "passed": true
+          },
+          {
+            "case": "only power separates competing predictions",
+            "operation": 50,
+            "passed": true
+          },
+          {
+            "case": "existing observation leaves one candidate",
+            "operation": 50,
+            "passed": true
+          },
+          {
+            "case": "remove enabling fact",
+            "operation": 51,
+            "passed": true
+          },
+          {
+            "case": "change an unrelated fact",
+            "operation": 51,
+            "passed": true
+          },
+          {
+            "case": "supports the declared claim",
+            "operation": 52,
+            "passed": true
+          },
+          {
+            "case": "available evidence supports another claim",
+            "operation": 52,
+            "passed": true
+          },
+          {
+            "case": "new evidence bridges retracted support",
+            "operation": 53,
+            "passed": true
+          },
+          {
+            "case": "repair still lacks a necessary premise",
+            "operation": 53,
+            "passed": true
+          },
+          {
+            "case": "preserve roles under structural mapping",
+            "operation": 54,
+            "passed": true
+          },
+          {
+            "case": "map requires each source role",
+            "operation": 54,
+            "passed": true
+          },
+          {
+            "case": "event reaches goal",
+            "operation": 55,
+            "passed": true
+          },
+          {
+            "case": "waiting for event leaves resume address",
+            "operation": 55,
+            "passed": true
+          },
+          {
+            "case": "read exactly the required operands",
+            "operation": 56,
+            "passed": true
+          },
+          {
+            "case": "check combined conditions",
+            "operation": 57,
+            "passed": true
+          },
+          {
+            "case": "select an already-stored successor",
+            "operation": 58,
+            "passed": true
+          },
+          {
+            "case": "apply the same expression to a supplied binding",
+            "operation": 59,
+            "passed": true
+          },
+          {
+            "case": "second effect observes the first write",
+            "operation": 60,
+            "passed": true
+          },
+          {
+            "case": "effects see the same starting state",
+            "operation": 61,
+            "passed": true
+          },
+          {
+            "case": "incompatible writes keep the current value",
+            "operation": 61,
+            "passed": true
+          },
+          {
+            "case": "pass a computed state into another step",
+            "operation": 62,
+            "passed": true
+          },
+          {
+            "case": "record the inputs and output of a real execution",
+            "operation": 63,
+            "passed": true
+          },
+          {
+            "case": "find a route despite a reachable cycle",
+            "operation": 64,
+            "passed": true
+          },
+          {
+            "case": "resume at the second instruction",
+            "operation": 65,
+            "passed": true
+          },
+          {
+            "case": "apply changes and remove a fact",
+            "operation": 66,
+            "passed": true
+          },
+          {
+            "case": "branch independently from x at five",
+            "operation": 67,
+            "passed": true
+          },
+          {
+            "case": "merge cycles while distinguishing a later output",
+            "operation": 68,
+            "passed": true
+          },
+          {
+            "case": "expire an old turn and an unrelated situation",
+            "operation": 69,
+            "passed": true
+          },
+          {
+            "case": "look up live operations and a missing capability",
+            "operation": 70,
+            "passed": true
+          },
+          {
+            "case": "verify the same core across changing saves",
+            "operation": 71,
+            "passed": true
+          },
+          {
+            "case": "share the route for two open events",
+            "operation": 72,
+            "passed": true
+          },
+          {
+            "case": "reduce simulated block reads with grouped UTF-8 payloads",
+            "operation": 73,
+            "passed": true
+          },
+          {
+            "case": "a timer dispatches its configured increment",
+            "operation": 74,
+            "passed": true
+          },
+          {
+            "case": "same question resolves to two remembered names",
+            "operation": 75,
+            "passed": true
+          },
+          {
+            "case": "carry the zorb binding into a separate lookup",
+            "operation": 76,
+            "passed": true
+          },
+          {
+            "case": "a cover blocks the premise needed for slippery",
+            "operation": 77,
+            "passed": true
+          },
+          {
+            "case": "participants answer differently about the key",
+            "operation": 78,
+            "passed": true
+          },
+          {
+            "case": "same input reproduces execution after JSON reload",
+            "operation": 79,
+            "passed": true
+          },
+          {
+            "case": "measure a real increment with declared parameters",
+            "operation": 80,
+            "passed": true
+          }
+        ],
+        "operations": 80,
+        "passed": 126
+      },
+      "peak_python_bytes": 2380449
+    },
+    "operation-check-selected": {
+      "command": [
+        "vault_operations.py",
+        "check",
+        "--operation",
+        "76"
+      ],
+      "elapsed_ns": 302731100,
+      "output": {
+        "cases": [
+          {
+            "case": "carry the zorb binding into a separate lookup",
+            "operation": 76,
+            "passed": true
+          }
+        ],
+        "operations": 1,
+        "passed": 1
+      },
+      "peak_python_bytes": 2418670
+    },
+    "operation-for-key": {
+      "command": [
+        "vault_operations.py",
+        "for-key",
+        "[[state]]"
+      ],
+      "elapsed_ns": 231234100,
+      "output": {
+        "key": "state",
+        "operations": [
+          {
+            "id": 55,
+            "name": "executable-links",
+            "title": "Executable links"
+          },
+          {
+            "id": 58,
+            "name": "direct-transitions",
+            "title": "Direct transitions"
+          },
+          {
+            "id": 59,
+            "name": "parameterized-transitions",
+            "title": "Parameterized transitions"
+          },
+          {
+            "id": 65,
+            "name": "resume-addresses",
+            "title": "Resume addresses"
+          },
+          {
+            "id": 66,
+            "name": "state-differences",
+            "title": "State differences"
+          },
+          {
+            "id": 67,
+            "name": "branching-saves",
+            "title": "Branching saves"
+          },
+          {
+            "id": 68,
+            "name": "shared-states",
+            "title": "Shared states"
+          },
+          {
+            "id": 71,
+            "name": "identity-through-state-changes",
+            "title": "Identity through state changes"
+          },
+          {
+            "id": 75,
+            "name": "same-words-different-save",
+            "title": "Same words, different save"
+          },
+          {
+            "id": 79,
+            "name": "restore-and-replay",
+            "title": "Restore and replay"
+          }
+        ]
+      },
+      "peak_python_bytes": 1736516
+    },
+    "operation-list": {
+      "command": [
+        "vault_operations.py",
+        "list"
+      ],
+      "elapsed_ns": 245501800,
+      "output": [
+        {
+          "anchors": [
+            "bank",
+            "money",
+            "river"
+          ],
+          "id": 1,
+          "name": "word-senses",
+          "title": "Word senses"
+        },
+        {
+          "anchors": [
+            "person",
+            "reference"
+          ],
+          "id": 2,
+          "name": "reference-resolution",
+          "title": "Reference resolution"
+        },
+        {
+          "anchors": [
+            "place",
+            "speaker",
+            "time"
+          ],
+          "id": 3,
+          "name": "here-there-and-now",
+          "title": "Here, there, and now"
+        },
+        {
+          "anchors": [
+            "event",
+            "give"
+          ],
+          "id": 4,
+          "name": "semantic-roles",
+          "title": "Semantic roles"
+        },
+        {
+          "anchors": [
+            "meaning",
+            "sentence"
+          ],
+          "id": 5,
+          "name": "paraphrase",
+          "title": "Paraphrase"
+        },
+        {
+          "anchors": [
+            "phrase",
+            "word"
+          ],
+          "id": 6,
+          "name": "phrase-composition",
+          "title": "Phrase composition"
+        },
+        {
+          "anchors": [
+            "ice",
+            "phrase"
+          ],
+          "id": 7,
+          "name": "idioms",
+          "title": "Idioms"
+        },
+        {
+          "anchors": [
+            "deny",
+            "sentence"
+          ],
+          "id": 8,
+          "name": "negation-scope",
+          "title": "Negation scope"
+        },
+        {
+          "anchors": [
+            "fact",
+            "question"
+          ],
+          "id": 9,
+          "name": "presuppositions",
+          "title": "Presuppositions"
+        },
+        {
+          "anchors": [
+            "language",
+            "meaning"
+          ],
+          "id": 10,
+          "name": "crosslanguage-meaning",
+          "title": "Cross-language meaning"
+        },
+        {
+          "anchors": [
+            "promise",
+            "request"
+          ],
+          "id": 11,
+          "name": "speech-acts",
+          "title": "Speech acts"
+        },
+        {
+          "anchors": [
+            "answer",
+            "intention"
+          ],
+          "id": 12,
+          "name": "intent",
+          "title": "Intent"
+        },
+        {
+          "anchors": [
+            "information",
+            "name"
+          ],
+          "id": 13,
+          "name": "constraints",
+          "title": "Constraints"
+        },
+        {
+          "anchors": [
+            "information",
+            "question"
+          ],
+          "id": 14,
+          "name": "missing-information",
+          "title": "Missing information"
+        },
+        {
+          "anchors": [
+            "choice",
+            "question"
+          ],
+          "id": 15,
+          "name": "clarification",
+          "title": "Clarification"
+        },
+        {
+          "anchors": [
+            "request",
+            "window"
+          ],
+          "id": 16,
+          "name": "indirect-requests",
+          "title": "Indirect requests"
+        },
+        {
+          "anchors": [
+            "commitment",
+            "promise"
+          ],
+          "id": 17,
+          "name": "commitments",
+          "title": "Commitments"
+        },
+        {
+          "anchors": [
+            "fact",
+            "history"
+          ],
+          "id": 18,
+          "name": "corrections",
+          "title": "Corrections"
+        },
+        {
+          "anchors": [
+            "history",
+            "topic"
+          ],
+          "id": 19,
+          "name": "topic-return",
+          "title": "Topic return"
+        },
+        {
+          "anchors": [
+            "answer",
+            "reply"
+          ],
+          "id": 20,
+          "name": "reply-structure",
+          "title": "Reply structure"
+        },
+        {
+          "anchors": [
+            "after",
+            "before",
+            "during"
+          ],
+          "id": 21,
+          "name": "before-during-and-after",
+          "title": "Before, during, and after"
+        },
+        {
+          "anchors": [
+            "duration",
+            "time"
+          ],
+          "id": 22,
+          "name": "duration",
+          "title": "Duration"
+        },
+        {
+          "anchors": [
+            "change",
+            "persistence"
+          ],
+          "id": 23,
+          "name": "persistence",
+          "title": "Persistence"
+        },
+        {
+          "anchors": [
+            "container",
+            "inside"
+          ],
+          "id": 24,
+          "name": "containment",
+          "title": "Containment"
+        },
+        {
+          "anchors": [
+            "part",
+            "whole"
+          ],
+          "id": 25,
+          "name": "part-and-whole",
+          "title": "Part and whole"
+        },
+        {
+          "anchors": [
+            "orientation",
+            "rotation"
+          ],
+          "id": 26,
+          "name": "orientation",
+          "title": "Orientation"
+        },
+        {
+          "anchors": [
+            "capacity",
+            "units"
+          ],
+          "id": 27,
+          "name": "units-and-capacity",
+          "title": "Units and capacity"
+        },
+        {
+          "anchors": [
+            "action",
+            "condition"
+          ],
+          "id": 28,
+          "name": "preconditions",
+          "title": "Preconditions"
+        },
+        {
+          "anchors": [
+            "action",
+            "effect"
+          ],
+          "id": 29,
+          "name": "action-effects",
+          "title": "Action effects"
+        },
+        {
+          "anchors": [
+            "actions",
+            "available"
+          ],
+          "id": 30,
+          "name": "available-actions",
+          "title": "Available actions"
+        },
+        {
+          "anchors": [
+            "cost",
+            "resources"
+          ],
+          "id": 31,
+          "name": "resources",
+          "title": "Resources"
+        },
+        {
+          "anchors": [
+            "feedback",
+            "step"
+          ],
+          "id": 32,
+          "name": "feedback",
+          "title": "Feedback"
+        },
+        {
+          "anchors": [
+            "meaning",
+            "symbol"
+          ],
+          "id": 33,
+          "name": "encountered-possibilities",
+          "title": "Encountered possibilities"
+        },
+        {
+          "anchors": [
+            "observation",
+            "report"
+          ],
+          "id": 34,
+          "name": "reports-and-observations",
+          "title": "Reports and observations"
+        },
+        {
+          "anchors": [
+            "fact",
+            "source"
+          ],
+          "id": 35,
+          "name": "conflicting-facts",
+          "title": "Conflicting facts"
+        },
+        {
+          "anchors": [
+            "fact",
+            "unknown"
+          ],
+          "id": 36,
+          "name": "unresolved-facts",
+          "title": "Unresolved facts"
+        },
+        {
+          "anchors": [
+            "belief",
+            "person"
+          ],
+          "id": 37,
+          "name": "perspective",
+          "title": "Perspective"
+        },
+        {
+          "anchors": [
+            "belief",
+            "person"
+          ],
+          "id": 38,
+          "name": "beliefs-within-beliefs",
+          "title": "Beliefs within beliefs"
+        },
+        {
+          "anchors": [
+            "choice",
+            "preference"
+          ],
+          "id": 39,
+          "name": "preferences",
+          "title": "Preferences"
+        },
+        {
+          "anchors": [
+            "permission",
+            "rule"
+          ],
+          "id": 40,
+          "name": "situational-norms",
+          "title": "Situational norms"
+        },
+        {
+          "anchors": [
+            "fact",
+            "goal"
+          ],
+          "id": 41,
+          "name": "relevance-by-goal",
+          "title": "Relevance by goal"
+        },
+        {
+          "anchors": [
+            "fiction",
+            "world"
+          ],
+          "id": 42,
+          "name": "fiction-and-hypotheticals",
+          "title": "Fiction and hypotheticals"
+        },
+        {
+          "anchors": [
+            "all",
+            "exactly",
+            "none",
+            "some"
+          ],
+          "id": 43,
+          "name": "quantifiers",
+          "title": "Quantifiers"
+        },
+        {
+          "anchors": [
+            "binding",
+            "variable"
+          ],
+          "id": 44,
+          "name": "variable-binding",
+          "title": "Variable binding"
+        },
+        {
+          "anchors": [
+            "and",
+            "condition",
+            "not",
+            "or"
+          ],
+          "id": 45,
+          "name": "condition-combinations",
+          "title": "Condition combinations"
+        },
+        {
+          "anchors": [
+            "equation",
+            "solve"
+          ],
+          "id": 46,
+          "name": "reverse-solving",
+          "title": "Reverse solving"
+        },
+        {
+          "anchors": [
+            "multiple",
+            "solutions"
+          ],
+          "id": 47,
+          "name": "multiple-solutions",
+          "title": "Multiple solutions"
+        },
+        {
+          "anchors": [
+            "example",
+            "rule"
+          ],
+          "id": 48,
+          "name": "counterexamples",
+          "title": "Counterexamples"
+        },
+        {
+          "anchors": [
+            "alternative",
+            "explanations"
+          ],
+          "id": 49,
+          "name": "alternative-explanations",
+          "title": "Alternative explanations"
+        },
+        {
+          "anchors": [
+            "distinguish",
+            "evidence"
+          ],
+          "id": 50,
+          "name": "distinguishing-evidence",
+          "title": "Distinguishing evidence"
+        },
+        {
+          "anchors": [
+            "condition",
+            "consequence"
+          ],
+          "id": 51,
+          "name": "counterfactuals",
+          "title": "Counterfactuals"
+        },
+        {
+          "anchors": [
+            "argument",
+            "support"
+          ],
+          "id": 52,
+          "name": "argument-warrants",
+          "title": "Argument warrants"
+        },
+        {
+          "anchors": [
+            "objection",
+            "repair"
+          ],
+          "id": 53,
+          "name": "objection-and-repair",
+          "title": "Objection and repair"
+        },
+        {
+          "anchors": [
+            "analogy",
+            "relation"
+          ],
+          "id": 54,
+          "name": "analogical-reasoning",
+          "title": "Analogical reasoning"
+        },
+        {
+          "anchors": [
+            "action",
+            "rule",
+            "state"
+          ],
+          "id": 55,
+          "name": "executable-links",
+          "title": "Executable links"
+        },
+        {
+          "anchors": [
+            "measure",
+            "number",
+            "value"
+          ],
+          "id": 56,
+          "name": "arithmetic-dependencies",
+          "title": "Arithmetic dependencies"
+        },
+        {
+          "anchors": [
+            "condition",
+            "goal"
+          ],
+          "id": 57,
+          "name": "goal-conditions",
+          "title": "Goal conditions"
+        },
+        {
+          "anchors": [
+            "event",
+            "next",
+            "state"
+          ],
+          "id": 58,
+          "name": "direct-transitions",
+          "title": "Direct transitions"
+        },
+        {
+          "anchors": [
+            "change",
+            "state",
+            "variable"
+          ],
+          "id": 59,
+          "name": "parameterized-transitions",
+          "title": "Parameterized transitions"
+        },
+        {
+          "anchors": [
+            "effect",
+            "order"
+          ],
+          "id": 60,
+          "name": "ordered-effects",
+          "title": "Ordered effects"
+        },
+        {
+          "anchors": [
+            "effect",
+            "independent"
+          ],
+          "id": 61,
+          "name": "parallel-effects",
+          "title": "Parallel effects"
+        },
+        {
+          "anchors": [
+            "input",
+            "output",
+            "rule"
+          ],
+          "id": 62,
+          "name": "rule-composition",
+          "title": "Rule composition"
+        },
+        {
+          "anchors": [
+            "result",
+            "rule",
+            "trace"
+          ],
+          "id": 63,
+          "name": "traceable-execution",
+          "title": "Traceable execution"
+        },
+        {
+          "anchors": [
+            "cycle",
+            "goal",
+            "path"
+          ],
+          "id": 64,
+          "name": "cycle-detection",
+          "title": "Cycle detection"
+        },
+        {
+          "anchors": [
+            "address",
+            "state"
+          ],
+          "id": 65,
+          "name": "resume-addresses",
+          "title": "Resume addresses"
+        },
+        {
+          "anchors": [
+            "change",
+            "fact",
+            "state"
+          ],
+          "id": 66,
+          "name": "state-differences",
+          "title": "State differences"
+        },
+        {
+          "anchors": [
+            "branch",
+            "state"
+          ],
+          "id": 67,
+          "name": "branching-saves",
+          "title": "Branching saves"
+        },
+        {
+          "anchors": [
+            "equal",
+            "event",
+            "state"
+          ],
+          "id": 68,
+          "name": "shared-states",
+          "title": "Shared states"
+        },
+        {
+          "anchors": [
+            "context",
+            "conversation",
+            "situation"
+          ],
+          "id": 69,
+          "name": "context-lifetimes",
+          "title": "Context lifetimes"
+        },
+        {
+          "anchors": [
+            "ability",
+            "operation"
+          ],
+          "id": 70,
+          "name": "computed-capabilities",
+          "title": "Computed capabilities"
+        },
+        {
+          "anchors": [
+            "identity",
+            "state"
+          ],
+          "id": 71,
+          "name": "identity-through-state-changes",
+          "title": "Identity through state changes"
+        },
+        {
+          "anchors": [
+            "decision",
+            "event",
+            "table"
+          ],
+          "id": 72,
+          "name": "compact-decision-tables",
+          "title": "Compact decision tables"
+        },
+        {
+          "anchors": [
+            "address",
+            "disk",
+            "record"
+          ],
+          "id": 73,
+          "name": "disk-locality",
+          "title": "Disk locality"
+        },
+        {
+          "anchors": [
+            "event",
+            "input",
+            "time"
+          ],
+          "id": 74,
+          "name": "physical-triggers",
+          "title": "Physical triggers"
+        },
+        {
+          "anchors": [
+            "name",
+            "state",
+            "word"
+          ],
+          "id": 75,
+          "name": "same-words-different-save",
+          "title": "Same words, different save"
+        },
+        {
+          "anchors": [
+            "meaning",
+            "symbol",
+            "word"
+          ],
+          "id": 76,
+          "name": "new-word-existing-operation",
+          "title": "New word, existing operation"
+        },
+        {
+          "anchors": [
+            "change",
+            "rain",
+            "slippery"
+          ],
+          "id": 77,
+          "name": "one-changed-variable",
+          "title": "One changed variable"
+        },
+        {
+          "anchors": [
+            "belief",
+            "person"
+          ],
+          "id": 78,
+          "name": "competing-viewpoints",
+          "title": "Competing viewpoints"
+        },
+        {
+          "anchors": [
+            "input",
+            "restore",
+            "state"
+          ],
+          "id": 79,
+          "name": "restore-and-replay",
+          "title": "Restore and replay"
+        },
+        {
+          "anchors": [
+            "measure",
+            "operation",
+            "work"
+          ],
+          "id": 80,
+          "name": "measure-the-work",
+          "title": "Measure the work"
+        }
+      ],
+      "peak_python_bytes": 1736716
+    },
+    "operation-results": {
+      "command": [
+        "<compiled cases>"
+      ],
+      "elapsed_ns": 390727600,
+      "observations": {
+        "80:measure a real increment with declared parameters": {
+          "elapsed_ns": 468800,
+          "peak_python_bytes": 0
+        }
+      },
+      "output": {
+        "10:french": {
+          "fact": {
+            "property": "color",
+            "subject": "sky",
+            "value": "blue"
+          }
+        },
+        "10:spanish": {
+          "fact": {
+            "property": "color",
+            "subject": "sky",
+            "value": "blue"
+          }
+        },
+        "11:correction": {
+          "act": "correct",
+          "subject": "the door is open"
+        },
+        "11:promise": {
+          "act": "promise",
+          "subject": "call Lee"
+        },
+        "12:decide": {
+          "fields": [
+            "options",
+            "criteria"
+          ],
+          "goal": "a route",
+          "intent": "decision"
+        },
+        "12:explain": {
+          "fields": [
+            "conclusion",
+            "reason"
+          ],
+          "goal": "did the timer ring",
+          "intent": "explanation"
+        },
+        "13:date-list": [
+          {
+            "date": "Monday",
+            "name": "Mira"
+          },
+          {
+            "date": "Friday",
+            "name": "Lee"
+          }
+        ],
+        "13:single-name": [
+          {
+            "name": "Mira"
+          }
+        ],
+        "14:unresolved-address": {
+          "missing": [
+            "address"
+          ]
+        },
+        "15:outcome-changing-field": {
+          "field": "time",
+          "question": "What time do you plan to travel?"
+        },
+        "15:same-outcome": {
+          "field": null,
+          "question": null
+        },
+        "16:shared-room": {
+          "act": "request",
+          "action": "close the window"
+        },
+        "16:temperature-report": {
+          "act": "statement",
+          "action": null
+        },
+        "17:completed-commitment": {
+          "history": [
+            "offered",
+            "accepted",
+            "due",
+            "fulfilled"
+          ],
+          "state": "fulfilled"
+        },
+        "17:offer-declined": {
+          "history": [
+            "offered",
+            "declined"
+          ],
+          "state": "declined"
+        },
+        "18:update-one-scope": {
+          "facts": [
+            {
+              "color": "blue",
+              "scope": "kitchen",
+              "subject": "cup"
+            },
+            {
+              "color": "red",
+              "scope": "office",
+              "subject": "cup"
+            }
+          ],
+          "history": [
+            {
+              "after": "blue",
+              "before": "red",
+              "field": "color",
+              "scope": "kitchen",
+              "subject": "cup"
+            }
+          ]
+        },
+        "19:return-to-first-branch": {
+          "bookmarks": {
+            "dinner": {
+              "open": "guest count"
+            },
+            "garden": {
+              "open": "watering time"
+            }
+          },
+          "checkpoint": {
+            "open": "watering time"
+          },
+          "topic": "garden"
+        },
+        "1:financial": {
+          "scores": {
+            "financial": 2,
+            "river": 0
+          },
+          "sense": "financial"
+        },
+        "1:river": {
+          "scores": {
+            "financial": 0,
+            "river": 3
+          },
+          "sense": "river"
+        },
+        "20:example": {
+          "format": "example",
+          "missing": [],
+          "text": "The shelter is open. For example, A traveler entered at noon."
+        },
+        "20:proof": {
+          "format": "proof",
+          "missing": [],
+          "text": "The signed schedule lists today's hours. Therefore, The shelter is open."
+        },
+        "21:after end": {
+          "offset_from_start": 7,
+          "relation": "after"
+        },
+        "21:before start": {
+          "offset_from_start": -2,
+          "relation": "before"
+        },
+        "21:during closed interval": {
+          "offset_from_start": 5,
+          "relation": "during"
+        },
+        "22:fractional interval": {
+          "duration": "1/2",
+          "instantaneous": false
+        },
+        "22:single instant": {
+          "duration": 0,
+          "instantaneous": true
+        },
+        "23:events through cutoff": {
+          "applied": [
+            1,
+            2
+          ],
+          "state": {
+            "color": "green",
+            "lamp": "on"
+          }
+        },
+        "23:future change pending": {
+          "applied": [],
+          "state": {
+            "lamp": "off"
+          }
+        },
+        "24:cycle and duplicate edge": {
+          "contained": false,
+          "containers": [
+            "bag",
+            "car"
+          ]
+        },
+        "24:nested containers": {
+          "contained": true,
+          "containers": [
+            "bag",
+            "car",
+            "garage"
+          ]
+        },
+        "25:absent and unsuitable parts": {
+          "available": false,
+          "missing": [
+            "brake"
+          ],
+          "unsuitable": [
+            "tire"
+          ]
+        },
+        "25:working assembly": {
+          "available": true,
+          "missing": [],
+          "unsuitable": []
+        },
+        "26:clockwise fractional coordinate": {
+          "point": [
+            3,
+            "-1/2"
+          ]
+        },
+        "26:rotate about translated origin": {
+          "point": [
+            0,
+            3
+          ]
+        },
+        "27:dimensions differ": {
+          "comparable": false
+        },
+        "27:exact conversion and fit": {
+          "comparable": true,
+          "converted": 375,
+          "fits": true,
+          "remaining": 25,
+          "unit": "milliliter"
+        },
+        "27:insufficient capacity": {
+          "comparable": true,
+          "converted": "11/10",
+          "fits": false,
+          "remaining": "-1/10",
+          "unit": "liter"
+        },
+        "28:locked and out of reach": {
+          "applicable": false,
+          "missing": [
+            "unlocked",
+            "nearby"
+          ]
+        },
+        "28:meets both requirements": {
+          "applicable": true,
+          "missing": []
+        },
+        "29:blocked open changes nothing": {
+          "applied": false,
+          "missing": [
+            "unlocked"
+          ],
+          "state": {
+            "locked": true,
+            "nearby": true,
+            "open": false
+          },
+          "writes": {}
+        },
+        "29:take and move an item": {
+          "applied": true,
+          "missing": [],
+          "state": {
+            "holding": "book",
+            "location": "hall",
+            "locked": false
+          },
+          "writes": {
+            "holding": "book",
+            "location": "hall"
+          }
+        },
+        "2:description": {
+          "antecedent": "box"
+        },
+        "2:pronoun": {
+          "antecedent": "mira"
+        },
+        "30:filter actions by current state": {
+          "actions": [
+            "wait",
+            "lock"
+          ]
+        },
+        "31:reject a request without charging any resource": {
+          "applied": [
+            "repair",
+            "signal"
+          ],
+          "blocked": [
+            {
+              "request": "travel",
+              "shortfalls": {
+                "coins": 1
+              }
+            }
+          ],
+          "remaining": {
+            "coins": 2,
+            "energy": 0
+          }
+        },
+        "31:unknown resource has zero budget": {
+          "applied": [],
+          "blocked": [
+            {
+              "request": "travel",
+              "shortfalls": {
+                "fuel": "1/2"
+              }
+            }
+          ],
+          "remaining": {}
+        },
+        "32:allowance exhausted before goal": {
+          "history": [
+            3,
+            "3/2",
+            "3/4"
+          ],
+          "reached": false,
+          "value": "3/4"
+        },
+        "32:end early at declared goal": {
+          "history": [
+            16,
+            8,
+            4,
+            2
+          ],
+          "reached": true,
+          "value": 2
+        },
+        "33:bind-new-symbol": {
+          "meaning": {
+            "tool": "large spoon"
+          },
+          "save": {
+            "room": "hall",
+            "symbols": {
+              "dax": {
+                "color": "blue"
+              },
+              "quob": {
+                "tool": "large spoon"
+              }
+            }
+          }
+        },
+        "34:source-disagreement": {
+          "challenged_by": [
+            "jo"
+          ],
+          "claim": {
+            "property": "color",
+            "source": "lee",
+            "subject": "cup",
+            "value": "blue"
+          },
+          "corroborated_by": [
+            "mira"
+          ]
+        },
+        "35:preserve-competing-accounts": {
+          "accounts": [
+            {
+              "sources": [
+                "lee",
+                "mira"
+              ],
+              "value": "blue"
+            },
+            {
+              "sources": [
+                "jo"
+              ],
+              "value": "red"
+            }
+          ],
+          "conflict": true
+        },
+        "36:revisit-with-posted-hours": {
+          "status": "resolved",
+          "value": "eight"
+        },
+        "36:rumor-only": {
+          "revisit": "When does the shop close?",
+          "status": "unknown",
+          "value": null
+        },
+        "37:participant-relative-access": {
+          "knowledge": {
+            "cup": {
+              "basis": "seen",
+              "value": "desk"
+            },
+            "key": {
+              "basis": "told",
+              "value": "drawer"
+            }
+          },
+          "participant": "lee"
+        },
+        "38:actual-lee-perspective": {
+          "status": "known",
+          "value": false
+        },
+        "38:nested-lee-in-mira": {
+          "status": "known",
+          "value": true
+        },
+        "39:different-optima": {
+          "lee": {
+            "preferred": [
+              "bus"
+            ],
+            "scores": {
+              "bus": -2,
+              "train": -3
+            }
+          },
+          "mira": {
+            "preferred": [
+              "train"
+            ],
+            "scores": {
+              "bus": 4,
+              "train": 11
+            }
+          }
+        },
+        "3:speaker-place-and-date": {
+          "I": "Mira",
+          "here": "kitchen",
+          "now": "2028-02-29T16:30:00Z",
+          "there": "garden",
+          "tomorrow": "2028-03-01"
+        },
+        "40:default-borrowing": {
+          "expectation": "ask first"
+        },
+        "40:established-permission": {
+          "expectation": "borrow within permission"
+        },
+        "41:outfit-facts": {
+          "facts": [
+            {
+              "id": "shoe-color",
+              "value": "black"
+            }
+          ]
+        },
+        "41:transitive-commute-facts": {
+          "facts": [
+            {
+              "id": "rain",
+              "value": true
+            },
+            {
+              "id": "ticket",
+              "value": "valid"
+            },
+            {
+              "id": "delay",
+              "value": 10
+            }
+          ]
+        },
+        "42:chained-counterfactual": {
+          "consequences": {
+            "ground": "wet",
+            "shoes": "wet"
+          },
+          "scenario": {
+            "door": "open",
+            "ground": "wet",
+            "shoes": "wet",
+            "weather": "rain"
+          },
+          "world": {
+            "door": "closed",
+            "ground": "dry",
+            "shoes": "dry",
+            "weather": "clear"
+          }
+        },
+        "42:closed-door": {
+          "consequences": {},
+          "scenario": {
+            "door": "closed",
+            "ground": "dry",
+            "shoes": "dry",
+            "weather": "rain"
+          },
+          "world": {
+            "door": "closed",
+            "ground": "dry",
+            "shoes": "dry",
+            "weather": "clear"
+          }
+        },
+        "43:empty collection": {
+          "all": true,
+          "exactly_one": false,
+          "matches": [],
+          "none": true,
+          "some": false
+        },
+        "43:only one witness": {
+          "all": false,
+          "exactly_one": true,
+          "matches": [
+            {
+              "good": true,
+              "id": "b"
+            }
+          ],
+          "none": false,
+          "some": true
+        },
+        "44:instantiate inverse relation": {
+          "bindings": {
+            "$container": "bag",
+            "$item": "book"
+          },
+          "matched": true,
+          "result": [
+            "inside",
+            "book",
+            "bag"
+          ]
+        },
+        "44:repeated variable mismatch": {
+          "bindings": {},
+          "matched": false
+        },
+        "45:negated condition fails": {
+          "satisfied": false
+        },
+        "45:nested premises hold": {
+          "satisfied": true
+        },
+        "46:solve with target in denominator": {
+          "target": "c",
+          "value": 4
+        },
+        "46:solve with variable coefficient": {
+          "target": "c",
+          "value": "5/2"
+        },
+        "47:combined constraints leave one solution": {
+          "count": 1,
+          "solutions": [
+            {
+              "x": 1,
+              "y": 2
+            }
+          ]
+        },
+        "47:several satisfying assignments": {
+          "count": 3,
+          "solutions": [
+            {
+              "x": 0,
+              "y": 1
+            },
+            {
+              "x": 0,
+              "y": 2
+            },
+            {
+              "x": 1,
+              "y": 2
+            }
+          ]
+        },
+        "48:find violating witness": {
+          "holds_on_domain": false,
+          "witness": {
+            "x": 0
+          }
+        },
+        "48:no witness on supplied domain": {
+          "holds_on_domain": true,
+          "witness": null
+        },
+        "49:two compatible causes": {
+          "possible": [
+            "stalled",
+            "outage"
+          ],
+          "unresolved": []
+        },
+        "49:unknown effect remains unresolved": {
+          "possible": [
+            "outage"
+          ],
+          "unresolved": [
+            "unknown"
+          ]
+        },
+        "4:instrument": {
+          "event": "open",
+          "roles": {
+            "agent": "lee",
+            "instrument": "a key",
+            "patient": "the box"
+          }
+        },
+        "4:transfer": {
+          "event": "give",
+          "roles": {
+            "agent": "mira",
+            "recipient": "lee",
+            "theme": "a blue cup"
+          }
+        },
+        "50:existing observation leaves one candidate": {
+          "distinguishing": {}
+        },
+        "50:only power separates competing predictions": {
+          "distinguishing": {
+            "power": {
+              "outage": false,
+              "stalled": true
+            }
+          }
+        },
+        "51:change an unrelated fact": {
+          "actual": true,
+          "changed": false,
+          "hypothetical": true
+        },
+        "51:remove enabling fact": {
+          "actual": true,
+          "changed": true,
+          "hypothetical": false
+        },
+        "52:available evidence supports another claim": {
+          "supported": false,
+          "supported_by": []
+        },
+        "52:supports the declared claim": {
+          "supported": true,
+          "supported_by": [
+            "receipt"
+          ]
+        },
+        "53:new evidence bridges retracted support": {
+          "challenged": [],
+          "initial": [
+            "receipt"
+          ],
+          "repaired": [
+            "ledger"
+          ],
+          "supported": true
+        },
+        "53:repair still lacks a necessary premise": {
+          "challenged": [],
+          "initial": [
+            "receipt"
+          ],
+          "repaired": [],
+          "supported": false
+        },
+        "54:map requires each source role": {
+          "mapped": false,
+          "missing_relation": false,
+          "missing_roles": [
+            "book"
+          ]
+        },
+        "54:preserve roles under structural mapping": {
+          "mapped": true,
+          "target": [
+            "revolves-around",
+            "electron",
+            "nucleus"
+          ]
+        },
+        "55:event reaches goal": {
+          "cursor": null,
+          "state": {
+            "x": 7
+          },
+          "status": "reached",
+          "steps": [
+            {
+              "address": "advance",
+              "input": {
+                "state": {
+                  "x": 4
+                },
+                "values": {
+                  "step": 3
+                }
+              },
+              "next": null,
+              "operation": 59,
+              "result": {
+                "state": {
+                  "x": 7
+                },
+                "value": 7
+              },
+              "writes": {
+                "x": 7
+              }
+            }
+          ]
+        },
+        "55:waiting for event leaves resume address": {
+          "cursor": "advance",
+          "state": {
+            "x": 4
+          },
+          "status": "waiting",
+          "steps": []
+        },
+        "56:read exactly the required operands": {
+          "operands": {
+            "a": "-1.186616",
+            "b": "1.186616"
+          },
+          "read": [
+            "a",
+            "b"
+          ],
+          "value": 0
+        },
+        "57:check combined conditions": {
+          "reached": true
+        },
+        "58:select an already-stored successor": {
+          "found": true,
+          "reply": "ready",
+          "state": "on"
+        },
+        "59:apply the same expression to a supplied binding": {
+          "state": {
+            "marker": "current",
+            "x": 9
+          },
+          "value": 9
+        },
+        "5:active": {
+          "event": "give",
+          "roles": {
+            "agent": "mira",
+            "recipient": "lee",
+            "theme": "a blue cup"
+          }
+        },
+        "5:passive": {
+          "event": "give",
+          "roles": {
+            "agent": "mira",
+            "recipient": "lee",
+            "theme": "a blue cup"
+          }
+        },
+        "60:second effect observes the first write": {
+          "state": {
+            "a": 2,
+            "b": 6
+          },
+          "writes": [
+            {
+              "target": "a",
+              "value": 2
+            },
+            {
+              "target": "b",
+              "value": 6
+            }
+          ]
+        },
+        "61:effects see the same starting state": {
+          "conflicts": [],
+          "state": {
+            "a": 2,
+            "b": 3
+          }
+        },
+        "61:incompatible writes keep the current value": {
+          "conflicts": [
+            "a"
+          ],
+          "state": {
+            "a": 1
+          }
+        },
+        "62:pass a computed state into another step": {
+          "outputs": {
+            "first": {
+              "state": {
+                "x": 5
+              },
+              "value": 5
+            },
+            "second": {
+              "state": {
+                "x": 9
+              },
+              "value": 9
+            }
+          },
+          "value": 9
+        },
+        "63:record the inputs and output of a real execution": {
+          "result": {
+            "state": {
+              "x": 7
+            },
+            "value": 7
+          },
+          "trace": [
+            {
+              "input": {
+                "state": {
+                  "x": 3
+                },
+                "values": {
+                  "step": 4
+                }
+              },
+              "name": "parameterized-transitions",
+              "operation": 59,
+              "result": {
+                "state": {
+                  "x": 7
+                },
+                "value": 7
+              }
+            }
+          ]
+        },
+        "64:find a route despite a reachable cycle": {
+          "cycle_edges": [
+            [
+              "loop",
+              "entry"
+            ]
+          ],
+          "reached": true,
+          "route": [
+            "entry",
+            "alternate",
+            "goal"
+          ]
+        },
+        "65:resume at the second instruction": {
+          "cursor": null,
+          "state": {
+            "x": 11
+          },
+          "status": "stopped",
+          "steps": [
+            {
+              "address": "second",
+              "input": {
+                "state": {
+                  "x": 9
+                },
+                "values": {
+                  "step": 2
+                }
+              },
+              "next": null,
+              "operation": 59,
+              "result": {
+                "state": {
+                  "x": 11
+                },
+                "value": 11
+              },
+              "writes": {
+                "x": 11
+              }
+            }
+          ]
+        },
+        "66:apply changes and remove a fact": {
+          "difference": {
+            "changed": {
+              "a": 2,
+              "flag": 1,
+              "new": null
+            },
+            "deleted": [
+              "b"
+            ]
+          },
+          "matches_after": true,
+          "state": {
+            "a": 2,
+            "flag": 1,
+            "keep": "fixed",
+            "new": null
+          }
+        },
+        "67:branch independently from x at five": {
+          "branches": {
+            "left": {
+              "cursor": null,
+              "state": {
+                "x": 7
+              },
+              "status": "stopped",
+              "steps": [
+                {
+                  "address": "increment",
+                  "input": {
+                    "state": {
+                      "x": 5
+                    },
+                    "values": {
+                      "step": 2
+                    }
+                  },
+                  "next": null,
+                  "operation": 59,
+                  "result": {
+                    "state": {
+                      "x": 7
+                    },
+                    "value": 7
+                  },
+                  "writes": {
+                    "x": 7
+                  }
+                }
+              ]
+            },
+            "right": {
+              "cursor": null,
+              "state": {
+                "x": 4
+              },
+              "status": "stopped",
+              "steps": [
+                {
+                  "address": "increment",
+                  "input": {
+                    "state": {
+                      "x": 5
+                    },
+                    "values": {
+                      "step": -1
+                    }
+                  },
+                  "next": null,
+                  "operation": 59,
+                  "result": {
+                    "state": {
+                      "x": 4
+                    },
+                    "value": 4
+                  },
+                  "writes": {
+                    "x": 4
+                  }
+                }
+              ]
+            }
+          },
+          "save": {
+            "cursor": "increment",
+            "state": {
+              "x": 5
+            }
+          }
+        },
+        "68:merge cycles while distinguishing a later output": {
+          "representatives": {
+            "a": "a",
+            "b": "b",
+            "c": "a",
+            "d": "b",
+            "e": "e"
+          },
+          "shared_count": 3
+        },
+        "69:expire an old turn and an unrelated situation": {
+          "expired": [
+            "old",
+            "same-turn-other-conversation",
+            "other-place"
+          ],
+          "facts": [
+            {
+              "id": "current",
+              "lifetime": "turn",
+              "scope": {
+                "conversation": "c1",
+                "turn": 3
+              },
+              "value": 1
+            },
+            {
+              "id": "thread",
+              "lifetime": "conversation",
+              "scope": {
+                "conversation": "c1"
+              },
+              "value": 3
+            },
+            {
+              "id": "current-place",
+              "lifetime": "situation",
+              "scope": {
+                "situation": "indoors"
+              },
+              "value": 5
+            },
+            {
+              "id": "always",
+              "lifetime": "persistent",
+              "value": 6
+            }
+          ]
+        },
+        "6:new-material-compound": {
+          "gloss": "shelf made of bamboo",
+          "head": "shelf",
+          "modifier": "bamboo",
+          "relation": "material"
+        },
+        "6:new-purpose-compound": {
+          "gloss": "lamp for night garden",
+          "head": "lamp",
+          "modifier": "night garden",
+          "relation": "purpose"
+        },
+        "70:look up live operations and a missing capability": {
+          "capabilities": {
+            "advance": {
+              "available": true,
+              "missing": []
+            },
+            "unavailable": {
+              "available": false,
+              "missing": [
+                "imaginary-capability"
+              ]
+            }
+          }
+        },
+        "71:verify the same core across changing saves": {
+          "after_core": "4b55c9ba9b659227eb1e44e9172697bd2b37bf3c2aaa9dc6f4519a92f7bee39a",
+          "after_save": "0149b45770ebe0c60a8324810e842578dd4ca46d8f8a85a765d6e3004023afd4",
+          "before_core": "4b55c9ba9b659227eb1e44e9172697bd2b37bf3c2aaa9dc6f4519a92f7bee39a",
+          "before_save": "fa524d7ac9136443c875e7927962e162d7ec04a03548a62090128eb27b9d4fd3",
+          "core_fingerprint": "4b55c9ba9b659227eb1e44e9172697bd2b37bf3c2aaa9dc6f4519a92f7bee39a",
+          "distinct_saves": true,
+          "same_core": true
+        },
+        "72:share the route for two open events": {
+          "addresses": {
+            "[\"closed\",\"override\"]": 0,
+            "[\"closed\",\"unlock\"]": 0,
+            "[\"open\",\"close\"]": 1
+          },
+          "entry_count": 3,
+          "result": {
+            "found": true,
+            "reply": "ready",
+            "state": "open"
+          },
+          "route_count": 2,
+          "routes": [
+            {
+              "next": "open",
+              "reply": "ready"
+            },
+            {
+              "next": "closed",
+              "reply": "secured"
+            }
+          ]
+        },
+        "73:reduce simulated block reads with grouped UTF-8 payloads": {
+          "after": {
+            "block_count": 1,
+            "blocks": [
+              0
+            ],
+            "bytes": 12,
+            "offsets": {
+              "a1": 0,
+              "a2": 2,
+              "b1": 4,
+              "b2": 8
+            }
+          },
+          "before": {
+            "block_count": 2,
+            "blocks": [
+              0,
+              1
+            ],
+            "bytes": 12,
+            "offsets": {
+              "a1": 0,
+              "a2": 6,
+              "b1": 2,
+              "b2": 8
+            }
+          },
+          "bytes_saved": 0,
+          "kind": "layout simulation"
+        },
+        "74:a timer dispatches its configured increment": {
+          "dispatched": true,
+          "kind": "local simulation",
+          "result": {
+            "state": {
+              "x": 11
+            },
+            "value": 11
+          }
+        },
+        "75:same question resolves to two remembered names": {
+          "answers": {
+            "first": "Mira",
+            "second": "Lee"
+          },
+          "different": true,
+          "event": {
+            "words": "What is my name?"
+          }
+        },
+        "76:carry the zorb binding into a separate lookup": {
+          "before": null,
+          "later": {
+            "tool": "large spoon"
+          },
+          "save": {
+            "room": "hall",
+            "symbols": {
+              "dax": "blue cup",
+              "zorb": {
+                "tool": "large spoon"
+              }
+            }
+          }
+        },
+        "77:a cover blocks the premise needed for slippery": {
+          "added_observation": [
+            "covered",
+            "[[path]]"
+          ],
+          "after": {
+            "blocked": [
+              {
+                "by": [
+                  "covered",
+                  "[[path]]"
+                ],
+                "checks": [],
+                "fact": [
+                  "wet",
+                  "[[path]]"
+                ],
+                "premises": [
+                  [
+                    "raining_at",
+                    "[[park]]"
+                  ],
+                  [
+                    "located_at",
+                    "[[path]]",
+                    "[[park]]"
+                  ],
+                  [
+                    "outdoor_surface",
+                    "[[path]]"
+                  ]
+                ],
+                "relation": "commonsense:usually_causes",
+                "rule": "rain_wets_outdoor_surfaces"
+              },
+              {
+                "by": [
+                  "covered",
+                  "[[bridge]]"
+                ],
+                "checks": [],
+                "fact": [
+                  "wet",
+                  "[[bridge]]"
+                ],
+                "premises": [
+                  [
+                    "raining_at",
+                    "[[park]]"
+                  ],
+                  [
+                    "located_at",
+                    "[[bridge]]",
+                    "[[park]]"
+                  ],
+                  [
+                    "outdoor_surface",
+                    "[[bridge]]"
+                  ]
+                ],
+                "relation": "commonsense:usually_causes",
+                "rule": "rain_wets_outdoor_surfaces"
+              }
+            ],
+            "c": [
+              "slippery",
+              "[[path]]"
+            ],
+            "expected": [],
+            "status": "unknown"
+          },
+          "before": {
+            "blocked": [
+              {
+                "by": [
+                  "covered",
+                  "[[bridge]]"
+                ],
+                "checks": [],
+                "fact": [
+                  "wet",
+                  "[[bridge]]"
+                ],
+                "premises": [
+                  [
+                    "raining_at",
+                    "[[park]]"
+                  ],
+                  [
+                    "located_at",
+                    "[[bridge]]",
+                    "[[park]]"
+                  ],
+                  [
+                    "outdoor_surface",
+                    "[[bridge]]"
+                  ]
+                ],
+                "relation": "commonsense:usually_causes",
+                "rule": "rain_wets_outdoor_surfaces"
+              }
+            ],
+            "c": [
+              "slippery",
+              "[[path]]"
+            ],
+            "expected": [
+              {
+                "checks": [],
+                "fact": [
+                  "wet",
+                  "[[path]]"
+                ],
+                "premises": [
+                  [
+                    "raining_at",
+                    "[[park]]"
+                  ],
+                  [
+                    "located_at",
+                    "[[path]]",
+                    "[[park]]"
+                  ],
+                  [
+                    "outdoor_surface",
+                    "[[path]]"
+                  ]
+                ],
+                "relation": "commonsense:usually_causes",
+                "rule": "rain_wets_outdoor_surfaces"
+              },
+              {
+                "checks": [],
+                "fact": [
+                  "slippery",
+                  "[[path]]"
+                ],
+                "premises": [
+                  [
+                    "wet",
+                    "[[path]]"
+                  ],
+                  [
+                    "walking_surface",
+                    "[[path]]"
+                  ]
+                ],
+                "relation": "commonsense:usually_causes",
+                "rule": "wet_walking_surface_may_be_slippery"
+              }
+            ],
+            "status": "expected"
+          }
+        },
+        "78:participants answer differently about the key": {
+          "answers": {
+            "lee": {
+              "basis": "told",
+              "value": "drawer"
+            },
+            "mira": {
+              "basis": "seen",
+              "value": "table"
+            }
+          },
+          "different": true,
+          "perspectives": {
+            "lee": {
+              "knowledge": {
+                "key": {
+                  "basis": "told",
+                  "value": "drawer"
+                }
+              },
+              "participant": "lee"
+            },
+            "mira": {
+              "knowledge": {
+                "key": {
+                  "basis": "seen",
+                  "value": "table"
+                }
+              },
+              "participant": "mira"
+            }
+          }
+        },
+        "79:same input reproduces execution after JSON reload": {
+          "equal": true,
+          "original": {
+            "cursor": null,
+            "state": {
+              "x": 12
+            },
+            "status": "stopped",
+            "steps": [
+              {
+                "address": "increment",
+                "input": {
+                  "state": {
+                    "x": 10
+                  },
+                  "values": {
+                    "step": 2
+                  }
+                },
+                "next": null,
+                "operation": 59,
+                "result": {
+                  "state": {
+                    "x": 12
+                  },
+                  "value": 12
+                },
+                "writes": {
+                  "x": 12
+                }
+              }
+            ]
+          },
+          "restored": {
+            "cursor": null,
+            "state": {
+              "x": 12
+            },
+            "status": "stopped",
+            "steps": [
+              {
+                "address": "increment",
+                "input": {
+                  "state": {
+                    "x": 10
+                  },
+                  "values": {
+                    "step": 2
+                  }
+                },
+                "next": null,
+                "operation": 59,
+                "result": {
+                  "state": {
+                    "x": 12
+                  },
+                  "value": 12
+                },
+                "writes": {
+                  "x": 12
+                }
+              }
+            ]
+          },
+          "serialized_bytes": 39
+        },
+        "7:physical": {
+          "meaning": "fracture frozen water",
+          "reading": "literal"
+        },
+        "7:social": {
+          "meaning": "ease social tension",
+          "reading": "conventional"
+        },
+        "80:measure a real increment with declared parameters": {
+          "allocation_scope": "increase over existing tracer peak",
+          "logical_bytes_read": 38,
+          "operations": 1,
+          "result": {
+            "state": {
+              "x": 9
+            },
+            "value": 9
+          }
+        },
+        "8:embedded-denial": {
+          "affirmed": true,
+          "content": {
+            "affirmed": false,
+            "agent": "lee",
+            "predicate": "leave"
+          },
+          "predicate": "say",
+          "speaker": "mira"
+        },
+        "9:stop-question": {
+          "presupposed": [
+            {
+              "predicate": "previously_did",
+              "roles": {
+                "activity": "skating",
+                "person": "mira"
+              }
+            }
+          ]
+        }
+      },
+      "peak_python_bytes": 2335146
+    },
+    "reasoning-build": {
+      "command": [
+        "reasoning_links.py",
+        "--database",
+        "@database",
+        "build"
+      ],
+      "elapsed_ns": 16177307100,
+      "output": {
+        "counts": {
+          "argument:concludes": 28,
+          "argument:qualifies": 2,
+          "argument:supports": 120,
+          "commonsense:before": 1388,
+          "commonsense:during": 106,
+          "commonsense:exception": 2,
+          "commonsense:inside": 147,
+          "commonsense:near": 219,
+          "commonsense:prevents": 1,
+          "commonsense:requires": 14,
+          "commonsense:usually_causes": 2,
+          "logic:and": 23384,
+          "logic:implies": 491,
+          "logic:or": 2130,
+          "rhetoric:comparison": 1111,
+          "rhetoric:concession": 83,
+          "rhetoric:contrast": 997,
+          "rhetoric:reason": 171,
+          "rhetoric:result": 75
+        },
+        "cue_links": 30471,
+        "relation_types": 33
+      },
+      "peak_python_bytes": 1335238
+    },
+    "reasoning-chain": {
+      "command": [
+        "reasoning_links.py",
+        "chain",
+        "--links",
+        "3",
+        "--width",
+        "1",
+        "--offset",
+        "123456789",
+        "--limit",
+        "2"
+      ],
+      "elapsed_ns": 627814200,
+      "output": {
+        "chains": [
+          {
+            "link": "[[\\u0000]] {argument:answers} [[\\u0000]] {argument:answers} [[\\u0002]] {rhetoric:contrast} [[than of the]]",
+            "position": "123456789",
+            "relations": [
+              "argument:answers",
+              "argument:answers",
+              "rhetoric:contrast"
+            ],
+            "statements": [
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0002"
+              ],
+              [
+                "than of the"
+              ]
+            ]
+          },
+          {
+            "link": "[[\\u0000]] {argument:answers} [[\\u0000]] {argument:answers} [[\\u0002]] {rhetoric:contrast} [[than of yore]]",
+            "position": "123456790",
+            "relations": [
+              "argument:answers",
+              "argument:answers",
+              "rhetoric:contrast"
+            ],
+            "statements": [
+              [
+                "\u0000"
+              ],
+              [
+                "\u0000"
+              ],
+              [
+                "\u0002"
+              ],
+              [
+                "than of yore"
+              ]
+            ]
+          }
+        ],
+        "combinations": "191540345680785753893210966059",
+        "link_count": 3,
+        "relation_types": 19,
+        "statement_width": 1,
+        "vocabulary_keys": 2298793
+      },
+      "peak_python_bytes": 1330167
+    },
+    "reasoning-examples": {
+      "command": [
+        "reasoning_links.py",
+        "examples",
+        "argument:supports",
+        "--limit",
+        "5"
+      ],
+      "elapsed_ns": 220576600,
+      "output": {
+        "examples": [
+          {
+            "count": 1,
+            "cue": "because",
+            "example": "JUST BECAUSE A",
+            "left": "a",
+            "right": "just"
+          },
+          {
+            "count": 1,
+            "cue": "because",
+            "example": "BUT BECAUSE HE",
+            "left": "he",
+            "right": "but"
+          },
+          {
+            "count": 1,
+            "cue": "because",
+            "example": "CHIEFLY BECAUSE HE",
+            "left": "he",
+            "right": "chiefly"
+          },
+          {
+            "count": 1,
+            "cue": "because",
+            "example": "EITHER BECAUSE HE",
+            "left": "he",
+            "right": "either"
+          },
+          {
+            "count": 1,
+            "cue": "because",
+            "example": "HIM BECAUSE HE",
+            "left": "he",
+            "right": "him"
+          }
+        ],
+        "relation": "argument:supports",
+        "roles": [
+          "premise",
+          "claim"
+        ]
+      },
+      "peak_python_bytes": 1330143
+    },
+    "reasoning-link": {
+      "command": [
+        "reasoning_links.py",
+        "link",
+        "rhetoric:contrast",
+        "[[slow]]",
+        "--right",
+        "[[steady]]"
+      ],
+      "elapsed_ns": 310779400,
+      "output": {
+        "evidence": [
+          {
+            "count": 1,
+            "cue": "but",
+            "example": "SLOW BUT STEADY"
+          }
+        ],
+        "link": "[[slow]] {rhetoric:contrast} [[steady]]",
+        "roles": [
+          "statement",
+          "contrast"
+        ]
+      },
+      "peak_python_bytes": 1330595
+    },
+    "reasoning-truth": {
+      "command": [
+        "reasoning_links.py",
+        "truth",
+        "logic:implies",
+        "1",
+        "0"
+      ],
+      "elapsed_ns": 225516700,
+      "output": {
+        "a": 1,
+        "b": 0,
+        "expression": "1 - a + a * b",
+        "relation": "logic:implies",
+        "result": 0
+      },
+      "peak_python_bytes": 1330336
+    },
+    "response": {
+      "command": [
+        "response_links.py",
+        "respond",
+        "[[hello]]"
+      ],
+      "elapsed_ns": 142879900,
+      "output": {
+        "input_links": [
+          "hello"
+        ],
+        "matched_context": "hello",
+        "mode": "continuations",
+        "prompt": "hello",
+        "responses": [
+          {
+            "evidence_count": 2,
+            "example": "HELLO AND",
+            "link": "{@[[and]]}",
+            "reply": "and"
+          },
+          {
+            "evidence_count": 1,
+            "example": "HELLO </s>",
+            "link": "{@[[</s>]]}",
+            "reply": "</s>"
+          },
+          {
+            "evidence_count": 1,
+            "example": "HELLO AND PIKO",
+            "link": "{@[[and]] [[piko]]}",
+            "reply": "and piko"
+          },
+          {
+            "evidence_count": 1,
+            "example": "HELLO CENTRAL",
+            "link": "{@[[central]]}",
+            "reply": "central"
+          },
+          {
+            "evidence_count": 1,
+            "example": "HELLO HELLO",
+            "link": "{@[[hello]]}",
+            "reply": "hello"
+          },
+          {
+            "evidence_count": 1,
+            "example": "HELLO THERE",
+            "link": "{@[[there]]}",
+            "reply": "there"
+          }
+        ]
+      },
+      "peak_python_bytes": 1093998
+    },
+    "response-build": {
+      "command": [
+        "response_links.py",
+        "--database",
+        "@database",
+        "build"
+      ],
+      "elapsed_ns": 49254534400,
+      "output": {
+        "continuation_evidence_links": 2376696,
+        "evidenced_pairs": 1718057,
+        "ordered_one_key_pairs": "5284449256849",
+        "vocabulary_keys": 2298793
+      },
+      "peak_python_bytes": 1094125
+    },
+    "response-page": {
+      "command": [
+        "response_links.py",
+        "respond",
+        "[[hello]]",
+        "--length",
+        "2",
+        "--limit",
+        "2"
+      ],
+      "elapsed_ns": 539688500,
+      "output": {
+        "input_length": 1,
+        "input_links": [
+          "hello"
+        ],
+        "mode": "combinations",
+        "ordered_pairs": "12147854960499683257",
+        "prompt": "hello",
+        "response_length": 2,
+        "responses": [
+          {
+            "link": "{@[[\\u0000]] [[\\u0000]]}",
+            "position": "0"
+          },
+          {
+            "link": "{@[[\\u0000]] [[\\u0001]]}",
+            "position": "1"
+          }
+        ],
+        "responses_per_input": "5284449256849",
+        "vocabulary_keys": 2298793
+      },
+      "peak_python_bytes": 1094104
+    },
+    "response-reply": {
+      "command": [
+        "response_links.py",
+        "respond",
+        "[[hello]]",
+        "--reply",
+        "{@[[world]]}"
+      ],
+      "elapsed_ns": 133000400,
+      "output": {
+        "evidence_count": 0,
+        "example": null,
+        "input_links": [
+          "hello"
+        ],
+        "link": "{@[[world]]}",
+        "matched_context": null,
+        "mode": "pair",
+        "prompt": "hello",
+        "reply": "world"
+      },
+      "peak_python_bytes": 1094012
+    },
+    "scalar": {
+      "command": [
+        "vault_identity.py",
+        "--scalar",
+        "0"
+      ],
+      "elapsed_ns": 75005200,
+      "output": {
+        "address": 0,
+        "bits": "00000000",
+        "type": "float32",
+        "value": "0.0"
+      },
+      "peak_python_bytes": 1265062
+    },
+    "unit-tests": {
+      "command": [
+        "<unittest discover>"
+      ],
+      "elapsed_ns": 830814900,
+      "output": {
+        "passed": [
+          "test_commonsense.CommonSenseTests.test_conflicting_observations_do_not_supply_a_premise",
+          "test_commonsense.CommonSenseTests.test_cover_blocks_wetting_and_its_downstream_effect",
+          "test_commonsense.CommonSenseTests.test_expectations_can_support_a_second_step",
+          "test_commonsense.CommonSenseTests.test_observed_negation_overrides_default",
+          "test_commonsense.CommonSenseTests.test_overflow_uses_a_numeric_comparison_with_matching_units",
+          "test_reasoning_links.ReasoningLinkTests.test_address_product_accepts_repeats_and_jumps_to_its_last_position",
+          "test_reasoning_links.ReasoningLinkTests.test_existing_chain_positions_use_the_original_relations_by_default",
+          "test_reasoning_links.ReasoningLinkTests.test_logic_truth_function_comes_from_the_rule_file",
+          "test_reasoning_links.ReasoningLinkTests.test_proof_derives_c_from_declared_premises",
+          "test_reasoning_links.ReasoningLinkTests.test_support_is_not_a_substitute_for_implication_in_a_proof",
+          "test_reasoning_links.ReasoningLinkTests.test_support_link_reverses_the_because_phrase_into_premise_then_claim",
+          "test_vault_identity.IdentityTests.test_data_file_cannot_select_an_asset_outside_the_vault",
+          "test_vault_identity.IdentityTests.test_dependency_data_file_can_be_part_of_the_identity",
+          "test_vault_identity.IdentityTests.test_identity_data_file_selects_the_fingerprint_inputs",
+          "test_vault_identity.IdentityTests.test_identity_executes_the_data_declarations",
+          "test_vault_identity.IdentityTests.test_identity_follows_bytes_and_survives_relocation",
+          "test_vault_identity.IdentityTests.test_scalar_addresses_preserve_exact_representation",
+          "test_vault_operations.CompiledVaultTests.test_a_failed_case_rolls_back_the_compiled_program",
+          "test_vault_operations.CompiledVaultTests.test_compiled_operation_executes_with_the_stored_parameters",
+          "test_vault_operations.CompiledVaultTests.test_decoded_address_binds_its_words_and_relation_into_execution",
+          "test_vault_operations.CompiledVaultTests.test_exact_fraction_survives_json_goal_boundaries",
+          "test_vault_operations.CompiledVaultTests.test_reply_preserves_a_zero_or_false_conclusion"
+        ],
+        "tests_run": 22
+      },
+      "peak_python_bytes": 2409420
+    },
+    "vocabulary-combine": {
+      "command": [
+        "vocabulary_links.py",
+        "combine",
+        "[[hello]]",
+        "[[world]]"
+      ],
+      "elapsed_ns": 113770700,
+      "output": {
+        "links": [
+          "hello",
+          "world"
+        ],
+        "sequence": "hello world",
+        "shared_sequences": [],
+        "stored_occurrences": 0
+      },
+      "peak_python_bytes": 929703
+    },
+    "vocabulary-links": {
+      "command": [
+        "vocabulary_links.py",
+        "links",
+        "[[hello]]"
+      ],
+      "elapsed_ns": 115064100,
+      "output": {
+        "containers": [
+          "<s> hello",
+          "hello </s>",
+          "hello and",
+          "hello and piko",
+          "hello central",
+          "hello hello",
+          "hello there",
+          "oh hello",
+          "othello",
+          "said hello",
+          "say hello",
+          "saying hello",
+          "shouted hello",
+          "thello",
+          "why hello"
+        ],
+        "key": "hello",
+        "members": [
+          "h",
+          "he",
+          "hel",
+          "hell",
+          "ello",
+          "llo",
+          "lo",
+          "o"
+        ],
+        "occurrences": 10,
+        "variants": [
+          [
+            "Hello",
+            "token",
+            2
+          ],
+          [
+            "hello",
+            "token",
+            2
+          ],
+          [
+            "ĠHello",
+            "token",
+            2
+          ],
+          [
+            "Ġhello",
+            "token",
+            2
+          ],
+          [
+            "HELLO",
+            "word",
+            1
+          ],
+          [
+            "hello",
+            "word",
+            1
+          ]
+        ]
+      },
+      "peak_python_bytes": 929631
+    },
+    "vocabulary-markdown": {
+      "artifact": "# Vocabulary links\n\n<code>hello</code>\n\n## Stored spellings\n\n- <code>Hello</code> · token × 2\n- <code>hello</code> · token × 2\n- <code>ĠHello</code> · token × 2\n- <code>Ġhello</code> · token × 2\n- <code>HELLO</code> · word × 1\n- <code>hello</code> · word × 1\n\n## Parts\n\n- [[#^entry-725477|h]]\n- [[#^entry-754111|he]]\n- [[#^entry-764818|hel]]\n- [[#^entry-765885|hell]]\n- [[#^entry-539214|ello]]\n- [[#^entry-978581|llo]]\n- [[#^entry-978756|lo]]\n- [[#^entry-1144984|o]]\n\n## Appears in\n\n- [[#^entry-49080|&lt;s&gt; hello]]\n- [[#^entry-766102|hello &lt;/s&gt;]]\n- [[#^entry-766103|hello and]]\n- [[#^entry-766104|hello and piko]]\n- [[#^entry-766105|hello central]]\n- [[#^entry-766106|hello hello]]\n- [[#^entry-766107|hello there]]\n- [[#^entry-1161207|oh hello]]\n- [[#^entry-1184113|othello]]\n- [[#^entry-1402602|said hello]]\n- [[#^entry-1417989|say hello]]\n- [[#^entry-1418517|saying hello]]\n- [[#^entry-1470833|shouted hello]]\n- [[#^entry-1637118|thello]]\n- [[#^entry-1829683|why hello]]\n\n## Linked entries\n\n<code>h</code> ^entry-725477\n\n<code>he</code> ^entry-754111\n\n<code>hel</code> ^entry-764818\n\n<code>hell</code> ^entry-765885\n\n<code>ello</code> ^entry-539214\n\n<code>llo</code> ^entry-978581\n\n<code>lo</code> ^entry-978756\n\n<code>o</code> ^entry-1144984\n\n<code>&lt;s&gt; hello</code> ^entry-49080\n\n<code>hello &lt;/s&gt;</code> ^entry-766102\n\n<code>hello and</code> ^entry-766103\n\n<code>hello and piko</code> ^entry-766104\n\n<code>hello central</code> ^entry-766105\n\n<code>hello hello</code> ^entry-766106\n\n<code>hello there</code> ^entry-766107\n\n<code>oh hello</code> ^entry-1161207\n\n<code>othello</code> ^entry-1184113\n\n<code>said hello</code> ^entry-1402602\n\n<code>say hello</code> ^entry-1417989\n\n<code>saying hello</code> ^entry-1418517\n\n<code>shouted hello</code> ^entry-1470833\n\n<code>thello</code> ^entry-1637118\n\n<code>why hello</code> ^entry-1829683\n",
+      "command": [
+        "vocabulary_links.py",
+        "links",
+        "[[hello]]",
+        "--markdown",
+        "@artifact"
+      ],
+      "elapsed_ns": 117556700,
+      "output": {
+        "entry": "[[hello]]",
+        "note": "@artifact"
+      },
+      "peak_python_bytes": 929703
+    },
+    "vocabulary-reindex": {
+      "command": [
+        "vocabulary_links.py",
+        "--database",
+        "@database",
+        "reindex"
+      ],
+      "elapsed_ns": 29729766800,
+      "output": {
+        "database": "@database",
+        "status": "reindexed"
+      },
+      "peak_python_bytes": 929703
+    }
+  }
+}

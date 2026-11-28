@@ -5,8 +5,11 @@ import re
 import sqlite3
 import struct
 from contextlib import closing
+from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
 from fractions import Fraction
+from mmap import ACCESS_READ, mmap
+from os import fstat
 from pathlib import Path
 
 from arithmetic import compile_value
@@ -29,42 +32,73 @@ class PoolLayout:
         return POOL_HEADER.size + self.float32 * 4 + self.uint16 * 2 + self.decimal * self.decimal_width
 
 
-def pool_layout(path):
-    with path.open("rb") as stream:
-        header = stream.read(POOL_HEADER.size)
+def decode_layout(header, size):
     if len(header) != POOL_HEADER.size:
         raise ValueError("The scalar pool header is incomplete.")
     magic, *fields = POOL_HEADER.unpack(header)
     layout = PoolLayout(*fields)
-    if magic != POOL_MAGIC or not layout.decimal_width or path.stat().st_size != layout.byte_size:
+    if magic != POOL_MAGIC or not layout.decimal_width or size != layout.byte_size:
         raise ValueError("The scalar pool does not match its layout.")
     return layout
 
 
-def read_scalar(path, index):
-    layout = pool_layout(path)
-    if not 0 <= index < layout.float32 + layout.uint16 + layout.decimal:
-        raise ValueError("Scalar address is out of range.")
+def pool_layout(path):
     with path.open("rb") as stream:
+        return decode_layout(stream.read(POOL_HEADER.size), fstat(stream.fileno()).st_size)
+
+
+class ScalarPool:
+    def __init__(self, stream, mapping, layout):
+        self.stream = stream
+        self.mapping = mapping
+        self.layout = layout
+
+    def read(self, offset, size):
+        if self.mapping is not None:
+            raw = self.mapping[offset:offset + size]
+        else:
+            self.stream.seek(offset)
+            raw = self.stream.read(size)
+        if len(raw) != size:
+            raise ValueError("The scalar pool changed during a read.")
+        return raw
+
+    def scalar(self, index):
+        layout = self.layout
+        if not 0 <= index < layout.float32 + layout.uint16 + layout.decimal:
+            raise ValueError("Scalar address is out of range.")
         if index < layout.float32:
-            stream.seek(POOL_HEADER.size + index * 4)
-            bits = stream.read(4)
+            raw = self.read(POOL_HEADER.size + index * 4, 4)
             return {
                 "address": index,
                 "type": "float32",
-                "bits": f"{int.from_bytes(bits, 'little'):08x}",
-                "value": str(struct.unpack("<f", bits)[0]),
-            }
+                "bits": f"{int.from_bytes(raw, 'little'):08x}",
+                "value": str(struct.unpack("<f", raw)[0]),
+            }, raw
         relative = index - layout.float32
         offset = POOL_HEADER.size + layout.float32 * 4
         if relative < layout.uint16:
-            stream.seek(offset + relative * 2)
-            return {"address": index, "type": "uint16", "value": int.from_bytes(stream.read(2), "little")}
+            raw = self.read(offset + relative * 2, 2)
+            return {"address": index, "type": "uint16", "value": int.from_bytes(raw, "little")}, raw
         relative -= layout.uint16
         offset += layout.uint16 * 2
-        stream.seek(offset + relative * layout.decimal_width)
-        literal = stream.read(layout.decimal_width).rstrip(b"\0").decode("ascii")
-        return {"address": index, "type": "decimal", "literal": literal}
+        raw = self.read(offset + relative * layout.decimal_width, layout.decimal_width)
+        literal = raw.rstrip(b"\0").decode("ascii")
+        return {"address": index, "type": "decimal", "literal": literal}, raw
+
+
+@contextmanager
+def open_pool(path, *, mapped=False):
+    with path.open("rb") as stream:
+        layout = decode_layout(stream.read(POOL_HEADER.size), fstat(stream.fileno()).st_size)
+        with (mmap(stream.fileno(), 0, access=ACCESS_READ) if mapped else nullcontext()) as mapping:
+            yield ScalarPool(stream, mapping, layout)
+
+
+def read_scalar(path, index):
+    with open_pool(path) as pool:
+        value, _ = pool.scalar(index)
+        return value
 
 
 def asset_path(directory, name):

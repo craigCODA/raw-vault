@@ -1,0 +1,17 @@
+[
+  {
+    "text": "convert 37 centimeters to meters",
+    "expected_reply": "37/100",
+    "reason": "Teach an exact unit conversion that also works for unfamiliar integer lengths."
+  },
+  {
+    "text": "triple -14",
+    "expected_reply": -42,
+    "reason": "Exercise a signed integer and a reusable arithmetic construction."
+  },
+  {
+    "text": "sense of charge in invoice payment",
+    "expected_reply": "fee",
+    "reason": "The example uses the financial sense of charge. Add a distinct electrical context to check the boundary."
+  }
+]

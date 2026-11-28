@@ -21,14 +21,14 @@ BASE_FAMILIES = ("rhetoric", "logic", "argument")
 FAMILIES = (*BASE_FAMILIES, "commonsense")
 
 
-def load_rules(path):
+def load_rules(path, *, read_bytes=Path.read_bytes):
     path = Path(path).resolve()
-    rules = json.loads(path.read_text(encoding="utf-8"))
+    rules = json.loads(read_bytes(path).decode("utf-8"))
     if rules["format"] != "vault-reasoning/1" or not rules["relations"]:
         raise ValueError("Expected a reasoning data file with relation definitions.")
     if "commonsense" in rules:
         common_path = asset_path(path.parent, rules["commonsense"])
-        common = json.loads(common_path.read_text(encoding="utf-8"))
+        common = json.loads(read_bytes(common_path).decode("utf-8"))
         if common["format"] != "vault-commonsense/1" or rules["relations"].keys() & common["relations"].keys():
             raise ValueError("Expected a common-sense data file with distinct relation names.")
         rules["relations"].update(common["relations"])
@@ -82,6 +82,11 @@ def matched_cues(text, queries):
         start = end
 
 
+def index_reasoning_endpoints(db):
+    db.execute("CREATE INDEX IF NOT EXISTS reasoning_by_left ON reasoning_evidence (left_key, occurrences DESC)")
+    db.execute("CREATE INDEX IF NOT EXISTS reasoning_by_right ON reasoning_evidence (right_key, occurrences DESC)")
+
+
 def build_reasoning_index(path, rules):
     queries = cue_index(rules)
     uri = Path(path).resolve().as_uri() + "?mode=rw"
@@ -125,6 +130,7 @@ def build_reasoning_index(path, rules):
                 for relation, left, right, cue, index in matched_cues(text, queries)
             ),
         )
+        index_reasoning_endpoints(db)
         counts = dict(db.execute("SELECT relation, COUNT(*) FROM reasoning_evidence GROUP BY relation"))
     return {"relation_types": len(rules["relations"]), "cue_links": sum(counts.values()), "counts": counts}
 

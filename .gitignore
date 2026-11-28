@@ -3,3 +3,4 @@ __pycache__/
 raw/*.sqlite-journal
 raw/*.sqlite-shm
 raw/*.sqlite-wal
+.vault-data/

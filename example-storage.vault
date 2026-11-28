@@ -1,0 +1,11 @@
+{
+  "operation": 56,
+  "input": {
+    "expression": "a + b - c",
+    "operands": {
+      "a": {"scalar": 0},
+      "b": {"scalar": 1},
+      "c": {"scalar": 2}
+    }
+  }
+}

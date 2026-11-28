@@ -1,0 +1,262 @@
+{
+  "format": "vault-body-graph/1",
+  "module": "vault_execution",
+  "exports": ["arithmetic_dependencies", "cycle_detection", "direct_transitions", "executable_links", "goal_conditions", "ordered_effects", "parallel_effects", "parameterized_transitions", "rule_composition", "traceable_execution"],
+  "bodies": {
+    "get_value": {
+      "parameters": ["scope", "path"],
+      "entry": ["s001", "s002", "s008"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "value"}], "value": {"name": "scope"}},
+        "s002": {"op": "For", "target": {"store": "component"}, "iter": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "path"}, "attr": "split"}, "args": [{"const": "."}]}, "body": [{"step": "s003"}]},
+        "s003": {"op": "If", "test": {"op": "Call", "func": {"name": "isinstance"}, "args": [{"name": "value"}, {"name": "dict"}]}, "body": [{"step": "s004"}], "orelse": [{"step": "s005"}]},
+        "s004": {"op": "Assign", "targets": [{"store": "value"}], "value": {"op": "Subscript", "value": {"name": "value"}, "slice": {"name": "component"}}},
+        "s005": {"op": "If", "test": {"op": "BoolOp", "operator": {"op": "And"}, "values": [{"op": "Call", "func": {"name": "isinstance"}, "args": [{"name": "value"}, {"name": "list"}]}, {"op": "Call", "func": {"op": "Attribute", "value": {"name": "component"}, "attr": "isdecimal"}}]}, "body": [{"step": "s006"}], "orelse": [{"step": "s007"}]},
+        "s006": {"op": "Assign", "targets": [{"store": "value"}], "value": {"op": "Subscript", "value": {"name": "value"}, "slice": {"op": "Call", "func": {"name": "int"}, "args": [{"name": "component"}]}}},
+        "s007": {"op": "Raise", "exc": {"op": "Call", "func": {"name": "KeyError"}, "args": [{"name": "path"}]}},
+        "s008": {"op": "Return", "value": {"op": "Call", "func": {"name": "record_read"}, "args": [{"name": "path"}, {"name": "value"}, {"name": "scope"}]}}
+      }
+    },
+    "substitute": {
+      "parameters": ["value", "scope"],
+      "entry": ["s001", "s005", "s007"],
+      "nodes": {
+        "s001": {"op": "If", "test": {"op": "Call", "func": {"name": "isinstance"}, "args": [{"name": "value"}, {"name": "dict"}]}, "body": [{"step": "s002"}, {"step": "s004"}]},
+        "s002": {"op": "If", "test": {"op": "Compare", "left": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "value"}, "attr": "keys"}}, "ops": [{"op": "Eq"}], "comparators": [{"op": "Set", "elts": [{"const": "$"}]}]}, "body": [{"step": "s003"}]},
+        "s003": {"op": "Return", "value": {"op": "Call", "func": {"body": "body/vault_execution/get_value"}, "args": [{"name": "scope"}, {"op": "Subscript", "value": {"name": "value"}, "slice": {"const": "$"}}]}},
+        "s004": {"op": "Return", "value": {"op": "DictComp", "key": {"name": "key"}, "value": {"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"name": "item"}, {"name": "scope"}]}, "generators": [{"op": "comprehension", "target": {"op": "Tuple", "elts": [{"store": "key"}, {"store": "item"}], "ctx": {"op": "Store"}}, "iter": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "value"}, "attr": "items"}}, "is_async": 0}]}},
+        "s005": {"op": "If", "test": {"op": "Call", "func": {"name": "isinstance"}, "args": [{"name": "value"}, {"name": "list"}]}, "body": [{"step": "s006"}]},
+        "s006": {"op": "Return", "value": {"op": "ListComp", "elt": {"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"name": "item"}, {"name": "scope"}]}, "generators": [{"op": "comprehension", "target": {"store": "item"}, "iter": {"name": "value"}, "is_async": 0}]}},
+        "s007": {"op": "Return", "value": {"name": "value"}}
+      }
+    },
+    "holds": {
+      "parameters": ["condition", "scope"],
+      "entry": ["s001", "s003", "s005", "s007", "s011", "s012", "s013", "s018"],
+      "nodes": {
+        "s001": {"op": "If", "test": {"op": "Compare", "left": {"const": "all"}, "ops": [{"op": "In"}], "comparators": [{"name": "condition"}]}, "body": [{"step": "s002"}]},
+        "s002": {"op": "Return", "value": {"op": "Call", "func": {"name": "all"}, "args": [{"op": "GeneratorExp", "elt": {"op": "Call", "func": {"body": "body/vault_execution/holds"}, "args": [{"name": "item"}, {"name": "scope"}]}, "generators": [{"op": "comprehension", "target": {"store": "item"}, "iter": {"op": "Subscript", "value": {"name": "condition"}, "slice": {"const": "all"}}, "is_async": 0}]}]}},
+        "s003": {"op": "If", "test": {"op": "Compare", "left": {"const": "any"}, "ops": [{"op": "In"}], "comparators": [{"name": "condition"}]}, "body": [{"step": "s004"}]},
+        "s004": {"op": "Return", "value": {"op": "Call", "func": {"name": "any"}, "args": [{"op": "GeneratorExp", "elt": {"op": "Call", "func": {"body": "body/vault_execution/holds"}, "args": [{"name": "item"}, {"name": "scope"}]}, "generators": [{"op": "comprehension", "target": {"store": "item"}, "iter": {"op": "Subscript", "value": {"name": "condition"}, "slice": {"const": "any"}}, "is_async": 0}]}]}},
+        "s005": {"op": "If", "test": {"op": "Compare", "left": {"const": "not"}, "ops": [{"op": "In"}], "comparators": [{"name": "condition"}]}, "body": [{"step": "s006"}]},
+        "s006": {"op": "Return", "value": {"op": "UnaryOp", "operator": {"op": "Not"}, "operand": {"op": "Call", "func": {"body": "body/vault_execution/holds"}, "args": [{"op": "Subscript", "value": {"name": "condition"}, "slice": {"const": "not"}}, {"name": "scope"}]}}},
+        "s007": {"op": "Try", "body": [{"step": "s008"}, {"step": "s009"}], "handlers": [{"op": "ExceptHandler", "type": {"op": "Tuple", "elts": [{"name": "KeyError"}, {"name": "IndexError"}]}, "body": [{"step": "s010"}]}]},
+        "s008": {"op": "Assign", "targets": [{"store": "value"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/get_value"}, "args": [{"name": "scope"}, {"op": "Subscript", "value": {"name": "condition"}, "slice": {"const": "path"}}]}},
+        "s009": {"op": "Assign", "targets": [{"store": "expected"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"op": "Subscript", "value": {"name": "condition"}, "slice": {"const": "value"}}, {"name": "scope"}]}},
+        "s010": {"op": "Return", "value": {"const": false}},
+        "s011": {"op": "Assign", "targets": [{"store": "numeric"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "condition"}, "attr": "get"}, "args": [{"const": "numeric"}, {"const": false}]}},
+        "s012": {"op": "Assign", "targets": [{"store": "mixed"}], "value": {"op": "BoolOp", "operator": {"op": "Or"}, "values": [{"op": "BoolOp", "operator": {"op": "And"}, "values": [{"op": "Compare", "left": {"op": "Call", "func": {"name": "type"}, "args": [{"name": "value"}]}, "ops": [{"op": "In"}], "comparators": [{"name": "NUMBER_TYPES"}]}, {"op": "Call", "func": {"name": "isinstance"}, "args": [{"name": "expected"}, {"name": "str"}]}]}, {"op": "BoolOp", "operator": {"op": "And"}, "values": [{"op": "Compare", "left": {"op": "Call", "func": {"name": "type"}, "args": [{"name": "expected"}]}, "ops": [{"op": "In"}], "comparators": [{"name": "NUMBER_TYPES"}]}, {"op": "Call", "func": {"name": "isinstance"}, "args": [{"name": "value"}, {"name": "str"}]}]}]}},
+        "s013": {"op": "If", "test": {"op": "BoolOp", "operator": {"op": "Or"}, "values": [{"name": "numeric"}, {"name": "mixed"}]}, "body": [{"step": "s014"}]},
+        "s014": {"op": "Try", "body": [{"step": "s015"}], "handlers": [{"op": "ExceptHandler", "type": {"op": "Tuple", "elts": [{"name": "ValueError"}, {"name": "ZeroDivisionError"}]}, "body": [{"step": "s016"}]}]},
+        "s015": {"op": "Assign", "targets": [{"op": "Tuple", "elts": [{"store": "value"}, {"store": "expected"}], "ctx": {"op": "Store"}}], "value": {"op": "Tuple", "elts": [{"op": "Call", "func": {"name": "Fraction"}, "args": [{"op": "Call", "func": {"name": "str"}, "args": [{"name": "value"}]}]}, {"op": "Call", "func": {"name": "Fraction"}, "args": [{"op": "Call", "func": {"name": "str"}, "args": [{"name": "expected"}]}]}]}},
+        "s016": {"op": "If", "test": {"name": "numeric"}, "body": [{"step": "s017"}]},
+        "s017": {"op": "Raise", "exc": {"op": "Call", "func": {"name": "ValueError"}, "args": [{"const": "A numeric condition needs two finite numbers."}]}, "cause": {"const": null}},
+        "s018": {"op": "Return", "value": {"op": "Call", "func": {"op": "Subscript", "value": {"name": "COMPARISONS"}, "slice": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "condition"}, "attr": "get"}, "args": [{"const": "op"}, {"const": "eq"}]}}, "args": [{"name": "value"}, {"name": "expected"}]}}
+      }
+    },
+    "number": {
+      "parameters": ["value"],
+      "entry": ["s001"],
+      "nodes": {
+        "s001": {"op": "Return", "value": {"op": "IfExp", "test": {"op": "Compare", "left": {"op": "Attribute", "value": {"name": "value"}, "attr": "denominator"}, "ops": [{"op": "Eq"}], "comparators": [{"const": 1}]}, "body": {"op": "Attribute", "value": {"name": "value"}, "attr": "numerator"}, "orelse": {"op": "Call", "func": {"name": "str"}, "args": [{"name": "value"}]}}}
+      }
+    },
+    "arithmetic_value": {
+      "parameters": ["expression", "inputs"],
+      "entry": ["s001", "s002"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "rule"}], "value": {"op": "Call", "func": {"name": "compile_value"}, "args": [{"name": "expression"}]}},
+        "s002": {"op": "Return", "value": {"op": "Call", "func": {"body": "body/vault_execution/number"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "rule"}, "attr": "evaluate"}, "args": [{"op": "DictComp", "key": {"name": "name"}, "value": {"op": "Call", "func": {"name": "Fraction"}, "args": [{"op": "Call", "func": {"name": "str"}, "args": [{"op": "Subscript", "value": {"name": "inputs"}, "slice": {"name": "name"}}]}]}, "generators": [{"op": "comprehension", "target": {"store": "name"}, "iter": {"op": "Attribute", "value": {"name": "rule"}, "attr": "inputs"}, "is_async": 0}]}]}]}}
+      }
+    },
+    "executable_links": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s004", "s005", "s006", "s008", "s009", "s010", "s039"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "state"}], "value": {"op": "Call", "func": {"name": "dict"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "state"}, {"op": "Dict"}]}]}},
+        "s002": {"op": "Assign", "targets": [{"store": "cursor"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "cursor"}, {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "entry"}]}]}},
+        "s003": {"op": "Assign", "targets": [{"store": "goal"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "c"}]}},
+        "s004": {"op": "Assign", "targets": [{"store": "event"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "event"}, {"op": "Dict"}]}},
+        "s005": {"op": "Assign", "targets": [{"store": "max_steps"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "max_steps"}, {"op": "Subscript", "value": {"name": "parameters"}, "slice": {"const": "max_steps"}}]}},
+        "s006": {"op": "If", "test": {"op": "BoolOp", "operator": {"op": "Or"}, "values": [{"op": "Compare", "left": {"op": "Call", "func": {"name": "type"}, "args": [{"name": "max_steps"}]}, "ops": [{"op": "IsNot"}], "comparators": [{"name": "int"}]}, {"op": "Compare", "left": {"name": "max_steps"}, "ops": [{"op": "Lt"}], "comparators": [{"const": 1}]}]}, "body": [{"step": "s007"}]},
+        "s007": {"op": "Raise", "exc": {"op": "Call", "func": {"name": "ValueError"}, "args": [{"const": "An execution needs a positive step allowance."}]}},
+        "s008": {"op": "Assign", "targets": [{"store": "trace"}], "value": {"op": "List"}},
+        "s009": {"op": "Assign", "targets": [{"store": "visited"}], "value": {"op": "Call", "func": {"name": "set"}}},
+        "s010": {"op": "While", "test": {"const": true}, "body": [{"step": "s011"}, {"step": "s012"}, {"step": "s015"}, {"step": "s018"}, {"step": "s021"}, {"step": "s022"}, {"step": "s025"}, {"step": "s026"}, {"step": "s027"}, {"step": "s028"}, {"step": "s031"}, {"step": "s032"}, {"step": "s033"}, {"step": "s034"}, {"step": "s035"}, {"step": "s036"}, {"step": "s037"}, {"step": "s038"}]},
+        "s011": {"op": "Assign", "targets": [{"store": "scope"}], "value": {"op": "Dict", "keys": [{"const": "state"}, {"const": "event"}], "values": [{"name": "state"}, {"name": "event"}]}},
+        "s012": {"op": "If", "test": {"op": "BoolOp", "operator": {"op": "And"}, "values": [{"op": "Compare", "left": {"name": "goal"}, "ops": [{"op": "IsNot"}], "comparators": [{"const": null}]}, {"op": "Call", "func": {"body": "body/vault_execution/holds"}, "args": [{"name": "goal"}, {"name": "scope"}]}]}, "body": [{"step": "s013"}, {"step": "s014"}]},
+        "s013": {"op": "Assign", "targets": [{"store": "status"}], "value": {"const": "reached"}},
+        "s014": {"op": "Break"},
+        "s015": {"op": "If", "test": {"op": "Compare", "left": {"name": "cursor"}, "ops": [{"op": "Is"}], "comparators": [{"const": null}]}, "body": [{"step": "s016"}, {"step": "s017"}]},
+        "s016": {"op": "Assign", "targets": [{"store": "status"}], "value": {"const": "stopped"}},
+        "s017": {"op": "Break"},
+        "s018": {"op": "If", "test": {"op": "Compare", "left": {"op": "Call", "func": {"name": "len"}, "args": [{"name": "trace"}]}, "ops": [{"op": "Eq"}], "comparators": [{"name": "max_steps"}]}, "body": [{"step": "s019"}, {"step": "s020"}]},
+        "s019": {"op": "Assign", "targets": [{"store": "status"}], "value": {"const": "paused"}},
+        "s020": {"op": "Break"},
+        "s021": {"op": "Assign", "targets": [{"store": "point"}], "value": {"op": "Tuple", "elts": [{"name": "cursor"}, {"op": "Call", "func": {"op": "Attribute", "value": {"name": "json"}, "attr": "dumps"}, "args": [{"name": "state"}], "keywords": [{"op": "keyword", "arg": "sort_keys", "value": {"const": true}}]}]}},
+        "s022": {"op": "If", "test": {"op": "Compare", "left": {"name": "point"}, "ops": [{"op": "In"}], "comparators": [{"name": "visited"}]}, "body": [{"step": "s023"}, {"step": "s024"}]},
+        "s023": {"op": "Assign", "targets": [{"store": "status"}], "value": {"const": "cycle"}},
+        "s024": {"op": "Break"},
+        "s025": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "visited"}, "attr": "add"}, "args": [{"name": "point"}]}},
+        "s026": {"op": "Assign", "targets": [{"store": "instruction"}], "value": {"op": "Subscript", "value": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "links"}}, "slice": {"name": "cursor"}}},
+        "s027": {"op": "Expr", "value": {"op": "Call", "func": {"name": "record_cursor"}, "args": [{"name": "cursor"}, {"name": "instruction"}]}},
+        "s028": {"op": "If", "test": {"op": "BoolOp", "operator": {"op": "And"}, "values": [{"op": "Compare", "left": {"const": "when"}, "ops": [{"op": "In"}], "comparators": [{"name": "instruction"}]}, {"op": "UnaryOp", "operator": {"op": "Not"}, "operand": {"op": "Call", "func": {"body": "body/vault_execution/holds"}, "args": [{"op": "Subscript", "value": {"name": "instruction"}, "slice": {"const": "when"}}, {"name": "scope"}]}}]}, "body": [{"step": "s029"}, {"step": "s030"}]},
+        "s029": {"op": "Assign", "targets": [{"store": "status"}], "value": {"const": "waiting"}},
+        "s030": {"op": "Break"},
+        "s031": {"op": "Assign", "targets": [{"store": "values"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "instruction"}, "attr": "get"}, "args": [{"const": "input"}, {"op": "Dict"}]}, {"name": "scope"}]}},
+        "s032": {"op": "Assign", "targets": [{"store": "result"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "context"}, "attr": "run"}, "args": [{"op": "Subscript", "value": {"name": "instruction"}, "slice": {"const": "operation"}}, {"name": "values"}]}},
+        "s033": {"op": "Assign", "targets": [{"store": "writes"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "instruction"}, "attr": "get"}, "args": [{"const": "write"}, {"op": "Dict"}]}, {"op": "BinOp", "left": {"name": "scope"}, "operator": {"op": "BitOr"}, "right": {"op": "Dict", "keys": [{"const": "result"}], "values": [{"name": "result"}]}}]}},
+        "s034": {"op": "Assign", "targets": [{"store": "next_cursor"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "instruction"}, "attr": "get"}, "args": [{"const": "next"}]}},
+        "s035": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "trace"}, "attr": "append"}, "args": [{"op": "Dict", "keys": [{"const": "address"}, {"const": "operation"}, {"const": "input"}, {"const": "result"}, {"const": "writes"}, {"const": "next"}], "values": [{"name": "cursor"}, {"op": "Subscript", "value": {"name": "instruction"}, "slice": {"const": "operation"}}, {"name": "values"}, {"name": "result"}, {"name": "writes"}, {"name": "next_cursor"}]}]}},
+        "s036": {"op": "Assign", "targets": [{"store": "next_state"}], "value": {"op": "Call", "func": {"name": "state_patch"}, "args": [{"name": "state"}, {"name": "writes"}, {"name": "cursor"}]}},
+        "s037": {"op": "Assign", "targets": [{"store": "state"}], "value": {"name": "next_state"}},
+        "s038": {"op": "Assign", "targets": [{"store": "cursor"}], "value": {"name": "next_cursor"}},
+        "s039": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "status"}, {"const": "cursor"}, {"const": "state"}, {"const": "steps"}], "values": [{"name": "status"}, {"name": "cursor"}, {"name": "state"}, {"name": "trace"}]}}
+      }
+    },
+    "arithmetic_dependencies": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s004"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "rule"}], "value": {"op": "Call", "func": {"name": "compile_value"}, "args": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "expression"}}]}},
+        "s002": {"op": "Assign", "targets": [{"store": "operands"}], "value": {"op": "DictComp", "key": {"name": "name"}, "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "context"}, "attr": "operand"}, "args": [{"op": "Subscript", "value": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "operands"}}, "slice": {"name": "name"}}]}, "generators": [{"op": "comprehension", "target": {"store": "name"}, "iter": {"op": "Attribute", "value": {"name": "rule"}, "attr": "inputs"}, "is_async": 0}]}},
+        "s003": {"op": "Assign", "targets": [{"store": "values"}], "value": {"op": "DictComp", "key": {"name": "name"}, "value": {"op": "Call", "func": {"name": "Fraction"}, "args": [{"op": "Call", "func": {"name": "str"}, "args": [{"name": "value"}]}]}, "generators": [{"op": "comprehension", "target": {"op": "Tuple", "elts": [{"store": "name"}, {"store": "value"}], "ctx": {"op": "Store"}}, "iter": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "operands"}, "attr": "items"}}, "is_async": 0}]}},
+        "s004": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "value"}, {"const": "operands"}, {"const": "read"}], "values": [{"op": "Call", "func": {"body": "body/vault_execution/number"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "rule"}, "attr": "evaluate"}, "args": [{"name": "values"}]}]}, {"name": "operands"}, {"op": "Call", "func": {"name": "list"}, "args": [{"name": "operands"}]}]}}
+      }
+    },
+    "goal_conditions": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001"],
+      "nodes": {
+        "s001": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "reached"}], "values": [{"op": "Call", "func": {"body": "body/vault_execution/holds"}, "args": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "c"}}, {"op": "Dict", "keys": [{"const": "state"}, {"const": "event"}], "values": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "state"}}, {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "event"}, {"op": "Dict"}]}]}]}]}}
+      }
+    },
+    "transition_key": {
+      "parameters": ["state", "event"],
+      "entry": ["s001"],
+      "nodes": {
+        "s001": {"op": "Return", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "json"}, "attr": "dumps"}, "args": [{"op": "List", "elts": [{"name": "state"}, {"name": "event"}]}], "keywords": [{"op": "keyword", "arg": "ensure_ascii", "value": {"const": false}}, {"op": "keyword", "arg": "sort_keys", "value": {"const": true}}, {"op": "keyword", "arg": "separators", "value": {"op": "Tuple", "elts": [{"const": ","}, {"const": ":"}]}}]}}
+      }
+    },
+    "direct_transitions": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s005"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "key"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/transition_key"}, "args": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "state"}}, {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "event"}}]}},
+        "s002": {"op": "Assign", "targets": [{"store": "entry"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "table"}}, "attr": "get"}, "args": [{"name": "key"}]}},
+        "s003": {"op": "If", "test": {"op": "Compare", "left": {"name": "entry"}, "ops": [{"op": "Is"}], "comparators": [{"const": null}]}, "body": [{"step": "s004"}]},
+        "s004": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "found"}, {"const": "state"}], "values": [{"const": false}, {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "state"}}]}},
+        "s005": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "found"}, {"const": "state"}, {"const": "reply"}], "values": [{"const": true}, {"op": "Call", "func": {"name": "replace_state"}, "args": [{"op": "Subscript", "value": {"name": "entry"}, "slice": {"const": "next"}}]}, {"op": "Call", "func": {"op": "Attribute", "value": {"name": "entry"}, "attr": "get"}, "args": [{"const": "reply"}]}]}}
+      }
+    },
+    "parameterized_transitions": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s004"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "state"}], "value": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "state"}}},
+        "s002": {"op": "Assign", "targets": [{"store": "values"}], "value": {"op": "Call", "func": {"name": "state_overlay"}, "args": [{"name": "state"}, {"op": "Call", "func": {"op": "Attribute", "value": {"name": "args"}, "attr": "get"}, "args": [{"const": "values"}, {"op": "Dict"}]}]}},
+        "s003": {"op": "Assign", "targets": [{"store": "value"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/arithmetic_value"}, "args": [{"op": "Subscript", "value": {"name": "parameters"}, "slice": {"const": "expression"}}, {"name": "values"}]}},
+        "s004": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "state"}, {"const": "value"}], "values": [{"op": "Call", "func": {"name": "state_patch"}, "args": [{"name": "state"}, {"op": "Dict", "keys": [{"op": "Subscript", "value": {"name": "parameters"}, "slice": {"const": "target"}}], "values": [{"name": "value"}]}]}, {"name": "value"}]}}
+      }
+    },
+    "effect_value": {
+      "parameters": ["effect", "state"],
+      "entry": ["s001", "s003"],
+      "nodes": {
+        "s001": {"op": "If", "test": {"op": "Compare", "left": {"const": "expression"}, "ops": [{"op": "In"}], "comparators": [{"name": "effect"}]}, "body": [{"step": "s002"}]},
+        "s002": {"op": "Return", "value": {"op": "Call", "func": {"body": "body/vault_execution/arithmetic_value"}, "args": [{"op": "Subscript", "value": {"name": "effect"}, "slice": {"const": "expression"}}, {"name": "state"}]}},
+        "s003": {"op": "Return", "value": {"op": "Subscript", "value": {"name": "effect"}, "slice": {"const": "value"}}}
+      }
+    },
+    "ordered_effects": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s007"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "state"}], "value": {"op": "Call", "func": {"name": "dict"}, "args": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "state"}}]}},
+        "s002": {"op": "Assign", "targets": [{"store": "writes"}], "value": {"op": "List"}},
+        "s003": {"op": "For", "target": {"store": "effect"}, "iter": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "effects"}}, "body": [{"step": "s004"}, {"step": "s005"}, {"step": "s006"}]},
+        "s004": {"op": "Assign", "targets": [{"store": "name"}], "value": {"op": "Subscript", "value": {"name": "effect"}, "slice": {"const": "target"}}},
+        "s005": {"op": "Assign", "targets": [{"op": "Subscript", "value": {"name": "state"}, "slice": {"name": "name"}, "ctx": {"op": "Store"}}], "value": {"op": "Call", "func": {"body": "body/vault_execution/effect_value"}, "args": [{"name": "effect"}, {"name": "state"}]}},
+        "s006": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "writes"}, "attr": "append"}, "args": [{"op": "Dict", "keys": [{"const": "target"}, {"const": "value"}], "values": [{"name": "name"}, {"op": "Subscript", "value": {"name": "state"}, "slice": {"name": "name"}}]}]}},
+        "s007": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "state"}, {"const": "writes"}], "values": [{"name": "state"}, {"name": "writes"}]}}
+      }
+    },
+    "parallel_effects": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s004", "s010"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "state"}], "value": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "state"}}},
+        "s002": {"op": "Assign", "targets": [{"store": "writes"}], "value": {"op": "Dict"}},
+        "s003": {"op": "Assign", "targets": [{"store": "conflicts"}], "value": {"op": "Call", "func": {"name": "set"}}},
+        "s004": {"op": "For", "target": {"store": "effect"}, "iter": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "effects"}}, "body": [{"step": "s005"}, {"step": "s006"}, {"step": "s007"}, {"step": "s009"}]},
+        "s005": {"op": "Assign", "targets": [{"store": "name"}], "value": {"op": "Subscript", "value": {"name": "effect"}, "slice": {"const": "target"}}},
+        "s006": {"op": "Assign", "targets": [{"store": "value"}], "value": {"op": "Call", "func": {"body": "body/vault_execution/effect_value"}, "args": [{"name": "effect"}, {"name": "state"}]}},
+        "s007": {"op": "If", "test": {"op": "BoolOp", "operator": {"op": "And"}, "values": [{"op": "Compare", "left": {"name": "name"}, "ops": [{"op": "In"}], "comparators": [{"name": "writes"}]}, {"op": "Compare", "left": {"op": "Subscript", "value": {"name": "writes"}, "slice": {"name": "name"}}, "ops": [{"op": "NotEq"}], "comparators": [{"name": "value"}]}]}, "body": [{"step": "s008"}]},
+        "s008": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "conflicts"}, "attr": "add"}, "args": [{"name": "name"}]}},
+        "s009": {"op": "Assign", "targets": [{"op": "Subscript", "value": {"name": "writes"}, "slice": {"name": "name"}, "ctx": {"op": "Store"}}], "value": {"name": "value"}},
+        "s010": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "state"}, {"const": "conflicts"}], "values": [{"op": "Call", "func": {"name": "state_patch"}, "args": [{"name": "state"}, {"op": "DictComp", "key": {"name": "name"}, "value": {"name": "value"}, "generators": [{"op": "comprehension", "target": {"op": "Tuple", "elts": [{"store": "name"}, {"store": "value"}], "ctx": {"op": "Store"}}, "iter": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "writes"}, "attr": "items"}}, "ifs": [{"op": "Compare", "left": {"name": "name"}, "ops": [{"op": "NotIn"}], "comparators": [{"name": "conflicts"}]}], "is_async": 0}]}]}, {"op": "Call", "func": {"name": "sorted"}, "args": [{"name": "conflicts"}]}]}}
+      }
+    },
+    "rule_composition": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s008"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "outputs"}], "value": {"op": "Dict"}},
+        "s002": {"op": "Assign", "targets": [{"store": "scope"}], "value": {"op": "Dict", "keys": [{"const": "input"}, {"const": "outputs"}], "values": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "input"}}, {"name": "outputs"}]}},
+        "s003": {"op": "For", "target": {"store": "step"}, "iter": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "steps"}}, "body": [{"step": "s004"}, {"step": "s005"}, {"step": "s007"}]},
+        "s004": {"op": "Assign", "targets": [{"store": "name"}], "value": {"op": "Subscript", "value": {"name": "step"}, "slice": {"const": "name"}}},
+        "s005": {"op": "If", "test": {"op": "Compare", "left": {"name": "name"}, "ops": [{"op": "In"}], "comparators": [{"name": "outputs"}]}, "body": [{"step": "s006"}]},
+        "s006": {"op": "Raise", "exc": {"op": "Call", "func": {"name": "ValueError"}, "args": [{"op": "JoinedStr", "values": [{"const": "A composed step has duplicate name "}, {"op": "FormattedValue", "value": {"name": "name"}, "conversion": 114}, {"const": "."}]}]}},
+        "s007": {"op": "Assign", "targets": [{"op": "Subscript", "value": {"name": "outputs"}, "slice": {"name": "name"}, "ctx": {"op": "Store"}}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "context"}, "attr": "run"}, "args": [{"op": "Subscript", "value": {"name": "step"}, "slice": {"const": "operation"}}, {"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"op": "Subscript", "value": {"name": "step"}, "slice": {"const": "input"}}, {"name": "scope"}]}]}},
+        "s008": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "value"}, {"const": "outputs"}], "values": [{"op": "Call", "func": {"body": "body/vault_execution/substitute"}, "args": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "result"}}, {"name": "scope"}]}, {"name": "outputs"}]}}
+      }
+    },
+    "traceable_execution": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "start"}], "value": {"op": "Call", "func": {"name": "len"}, "args": [{"op": "Attribute", "value": {"name": "context"}, "attr": "trace"}]}},
+        "s002": {"op": "Assign", "targets": [{"store": "output"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "context"}, "attr": "run"}, "args": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "operation"}}, {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "input"}}]}},
+        "s003": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "result"}, {"const": "trace"}], "values": [{"name": "output"}, {"op": "Subscript", "value": {"op": "Attribute", "value": {"name": "context"}, "attr": "trace"}, "slice": {"op": "Slice", "lower": {"name": "start"}}}]}}
+      }
+    },
+    "cycle_detection": {
+      "parameters": ["args", "parameters", "context"],
+      "entry": ["s001", "s002", "s003", "s004", "s005", "s011", "s012", "s018", "s019", "s020", "s032"],
+      "nodes": {
+        "s001": {"op": "Assign", "targets": [{"store": "graph"}], "value": {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "links"}}},
+        "s002": {"op": "Assign", "targets": [{"op": "Tuple", "elts": [{"store": "start"}, {"store": "goal"}], "ctx": {"op": "Store"}}], "value": {"op": "Tuple", "elts": [{"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "start"}}, {"op": "Subscript", "value": {"name": "args"}, "slice": {"const": "c"}}]}},
+        "s003": {"op": "Assign", "targets": [{"store": "previous"}], "value": {"op": "Dict", "keys": [{"name": "start"}], "values": [{"const": null}]}},
+        "s004": {"op": "Assign", "targets": [{"store": "queue"}], "value": {"op": "Call", "func": {"name": "deque"}, "args": [{"op": "List", "elts": [{"name": "start"}]}]}},
+        "s005": {"op": "While", "test": {"name": "queue"}, "body": [{"step": "s006"}, {"step": "s007"}]},
+        "s006": {"op": "Assign", "targets": [{"store": "node"}], "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "queue"}, "attr": "popleft"}}},
+        "s007": {"op": "For", "target": {"store": "neighbor"}, "iter": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "graph"}, "attr": "get"}, "args": [{"name": "node"}, {"op": "List"}]}, "body": [{"step": "s008"}]},
+        "s008": {"op": "If", "test": {"op": "Compare", "left": {"name": "neighbor"}, "ops": [{"op": "NotIn"}], "comparators": [{"name": "previous"}]}, "body": [{"step": "s009"}, {"step": "s010"}]},
+        "s009": {"op": "Assign", "targets": [{"op": "Subscript", "value": {"name": "previous"}, "slice": {"name": "neighbor"}, "ctx": {"op": "Store"}}], "value": {"name": "node"}},
+        "s010": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "queue"}, "attr": "append"}, "args": [{"name": "neighbor"}]}},
+        "s011": {"op": "Assign", "targets": [{"store": "route"}], "value": {"op": "List"}},
+        "s012": {"op": "If", "test": {"op": "Compare", "left": {"name": "goal"}, "ops": [{"op": "In"}], "comparators": [{"name": "previous"}]}, "body": [{"step": "s013"}, {"step": "s014"}, {"step": "s017"}]},
+        "s013": {"op": "Assign", "targets": [{"store": "node"}], "value": {"name": "goal"}},
+        "s014": {"op": "While", "test": {"op": "Compare", "left": {"name": "node"}, "ops": [{"op": "IsNot"}], "comparators": [{"const": null}]}, "body": [{"step": "s015"}, {"step": "s016"}]},
+        "s015": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "route"}, "attr": "append"}, "args": [{"name": "node"}]}},
+        "s016": {"op": "Assign", "targets": [{"store": "node"}], "value": {"op": "Subscript", "value": {"name": "previous"}, "slice": {"name": "node"}}},
+        "s017": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "route"}, "attr": "reverse"}}},
+        "s018": {"op": "Assign", "targets": [{"op": "Tuple", "elts": [{"store": "active"}, {"store": "visited"}, {"store": "edges"}], "ctx": {"op": "Store"}}], "value": {"op": "Tuple", "elts": [{"op": "Set", "elts": [{"name": "start"}]}, {"op": "Set", "elts": [{"name": "start"}]}, {"op": "List"}]}},
+        "s019": {"op": "Assign", "targets": [{"store": "stack"}], "value": {"op": "List", "elts": [{"op": "Tuple", "elts": [{"name": "start"}, {"op": "Call", "func": {"name": "iter"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "graph"}, "attr": "get"}, "args": [{"name": "start"}, {"op": "List"}]}]}]}]}},
+        "s020": {"op": "While", "test": {"name": "stack"}, "body": [{"step": "s021"}, {"step": "s022"}, {"step": "s023"}]},
+        "s021": {"op": "Assign", "targets": [{"op": "Tuple", "elts": [{"store": "node"}, {"store": "neighbors"}], "ctx": {"op": "Store"}}], "value": {"op": "Subscript", "value": {"name": "stack"}, "slice": {"op": "UnaryOp", "operator": {"op": "USub"}, "operand": {"const": 1}}}},
+        "s022": {"op": "Assign", "targets": [{"store": "neighbor"}], "value": {"op": "Call", "func": {"name": "next"}, "args": [{"name": "neighbors"}, {"const": null}]}},
+        "s023": {"op": "If", "test": {"op": "Compare", "left": {"name": "neighbor"}, "ops": [{"op": "Is"}], "comparators": [{"const": null}]}, "body": [{"step": "s024"}, {"step": "s025"}], "orelse": [{"step": "s026"}]},
+        "s024": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "active"}, "attr": "remove"}, "args": [{"name": "node"}]}},
+        "s025": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "stack"}, "attr": "pop"}}},
+        "s026": {"op": "If", "test": {"op": "Compare", "left": {"name": "neighbor"}, "ops": [{"op": "In"}], "comparators": [{"name": "active"}]}, "body": [{"step": "s027"}], "orelse": [{"step": "s028"}]},
+        "s027": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "edges"}, "attr": "append"}, "args": [{"op": "List", "elts": [{"name": "node"}, {"name": "neighbor"}]}]}},
+        "s028": {"op": "If", "test": {"op": "Compare", "left": {"name": "neighbor"}, "ops": [{"op": "NotIn"}], "comparators": [{"name": "visited"}]}, "body": [{"step": "s029"}, {"step": "s030"}, {"step": "s031"}]},
+        "s029": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "visited"}, "attr": "add"}, "args": [{"name": "neighbor"}]}},
+        "s030": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "active"}, "attr": "add"}, "args": [{"name": "neighbor"}]}},
+        "s031": {"op": "Expr", "value": {"op": "Call", "func": {"op": "Attribute", "value": {"name": "stack"}, "attr": "append"}, "args": [{"op": "Tuple", "elts": [{"name": "neighbor"}, {"op": "Call", "func": {"name": "iter"}, "args": [{"op": "Call", "func": {"op": "Attribute", "value": {"name": "graph"}, "attr": "get"}, "args": [{"name": "neighbor"}, {"op": "List"}]}]}]}]}},
+        "s032": {"op": "Return", "value": {"op": "Dict", "keys": [{"const": "reached"}, {"const": "route"}, {"const": "cycle_edges"}], "values": [{"op": "Call", "func": {"name": "bool"}, "args": [{"name": "route"}]}, {"name": "route"}, {"name": "edges"}]}}
+      }
+    }
+  }
+}

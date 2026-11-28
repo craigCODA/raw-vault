@@ -8,6 +8,8 @@ The [common-sense rules](<Common Sense.md>) apply everyday expectations to obser
 
 The [compiled operations](Operations.md) cover the 80 language, reasoning, execution, save-state, and experiment entries.
 
+Use the [health check](<docs/Vault Health.md>) to verify the shipped payloads and cases. The [runtime guide](docs/Runtime.md) covers graph addresses, traces, replay, saved conversations, and storage profiles. [Training](Training.md) covers concurrent teachers, critics, and published revisions.
+
 Run from the vault folder with Python 3.12 or newer.
 
 ```powershell
